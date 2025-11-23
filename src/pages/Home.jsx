@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Home() {
   const navigate = useNavigate()
@@ -87,7 +87,9 @@ export default function Home() {
                   <p className="mt-4 text-slate-300 text-left text-lg">Creatx is a tiny library of handcrafted micro-interactions and small UI patterns. Each snippet is designed to be lightweight, easy to integrate, and fully customizable so you can drop it into your project and iterate fast.</p>
                   <div className="mt-6 flex items-center gap-4">
                     <button className="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-md mt-4 text-white font-semibold">Get Started</button>
-                    <a href="#" className="px-5 py-3 border border-white/10 mt-4 rounded-md text-white/90">See Docs</a>
+                    <Link to="/docs" 
+                    onClick={() => window.scrollTo(0, 0)}
+                    className="px-5 py-3 border border-white/10 mt-4 rounded-md text-white/90">See Docs</Link>
                   </div>
                 </div>
                 <div className="text-left">

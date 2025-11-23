@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import AnimationPanel from "./components/AnimationPanel";
 import Home from "./pages/Home";
 import Create from "./pages/Create";
+import DocsShell from "./pages/DocsShell.jsx";
 
 const sampleCards = [
   {
@@ -228,6 +229,7 @@ function App() {
         <main className="site-main max-w-6xl mx-auto pt-28 pb-8 px-4">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/docs" element={<DocsShell />} />
             <Route
               path="/library"
               element={

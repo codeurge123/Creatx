@@ -20,6 +20,7 @@ export default function Navbar() {
 
           <div className="flex items-center gap-2">
             <NavLink to="/" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Home</NavLink>
+            <NavLink to="/docs" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Docs</NavLink>
             <NavLink to="/library" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Animations</NavLink>
             <NavLink to="/create" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Create</NavLink>
           </div>
