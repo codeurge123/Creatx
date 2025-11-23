@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 
 export default function Navbar() {
   const navigate = useNavigate()
@@ -15,13 +15,13 @@ export default function Navbar() {
         <div className={boxClasses}>
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/')} role="button" tabIndex={0}>
             {/* <img src="/logo.png" alt="logo" className="h-7 w-6 rounded  object-cover" onError={(e)=>{e.currentTarget.onerror=null; e.currentTarget.style.display='none'}} /> */}
-            <div className="text-white font-semibold text-3xl">Creatx</div>
+            <div className="text-white font-semibold text-3xl">Creatx.</div>
           </div>
 
           <div className="flex items-center gap-2">
-            <Link to="/" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Home</Link>
-            <Link to="/library" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Animations</Link>
-            <Link to="/create" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Create</Link>
+            <NavLink to="/" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Home</NavLink>
+            <NavLink to="/library" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Animations</NavLink>
+            <NavLink to="/create" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Create</NavLink>
           </div>
         </div>
       </nav>
