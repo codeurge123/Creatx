@@ -14,14 +14,14 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-4">
         <div className={boxClasses}>
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/')} role="button" tabIndex={0}>
-            <img src="/logo.png" alt="logo" className="h-10 w-10 rounded-full object-cover" onError={(e)=>{e.currentTarget.onerror=null; e.currentTarget.style.display='none'}} />
+            {/* <img src="/logo.png" alt="logo" className="h-7 w-6 rounded  object-cover" onError={(e)=>{e.currentTarget.onerror=null; e.currentTarget.style.display='none'}} /> */}
             <div className="text-white font-semibold text-lg">Creatx</div>
           </div>
 
           <div className="flex items-center gap-2">
             <Link to="/" className="px-3 py-1 rounded-md text-slate-200 hover:bg-white/10 hover:text-white transition-colors">Home</Link>
             <Link to="/library" className="px-3 py-1 rounded-md text-slate-200 hover:bg-white/10 hover:text-white transition-colors">Animations</Link>
-            <Link to="/create" className="px-3 py-1 rounded-md text-slate-200 hover:bg-white/10 hover:text-white transition-colors">Create Animations</Link>
+            <Link to="/create" className="px-3 py-1 rounded-md text-slate-200 hover:bg-white/10 hover:text-white transition-colors">Create</Link>
           </div>
         </div>
       </nav>
