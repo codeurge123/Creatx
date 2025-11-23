@@ -175,7 +175,7 @@ export default function CodeViewer({ card }) {
         </div>
       </div>
 
-      <div className="flex-1">
+      <div className="flex-1 rounded-md p-2 flex flex-col cv-fade-in">
         {tab === 'preview' ? (
           <div className={`h-full bg-white rounded-md overflow-hidden iframe-wrap ${previewLoaded ? 'loaded' : 'loading'} cv-slide`}>
             <iframe title={card.id} src={src} className="w-full h-72 md:h-96 border-0" sandbox="allow-scripts" onLoad={() => setPreviewLoaded(true)} />
