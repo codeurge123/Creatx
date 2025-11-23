@@ -15,13 +15,13 @@ export default function Navbar() {
         <div className={boxClasses}>
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/')} role="button" tabIndex={0}>
             {/* <img src="/logo.png" alt="logo" className="h-7 w-6 rounded  object-cover" onError={(e)=>{e.currentTarget.onerror=null; e.currentTarget.style.display='none'}} /> */}
-            <div className="text-white font-semibold text-lg">Creatx</div>
+            <div className="text-white font-semibold text-3xl">Creatx</div>
           </div>
 
           <div className="flex items-center gap-2">
-            <Link to="/" className="px-3 py-1 rounded-md text-slate-200 hover:bg-white/10 hover:text-white transition-colors">Home</Link>
-            <Link to="/library" className="px-3 py-1 rounded-md text-slate-200 hover:bg-white/10 hover:text-white transition-colors">Animations</Link>
-            <Link to="/create" className="px-3 py-1 rounded-md text-slate-200 hover:bg-white/10 hover:text-white transition-colors">Create</Link>
+            <Link to="/" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Home</Link>
+            <Link to="/library" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Animations</Link>
+            <Link to="/create" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Create</Link>
           </div>
         </div>
       </nav>

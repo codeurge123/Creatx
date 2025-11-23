@@ -176,7 +176,7 @@ export default function AnimationPanel() {
               tabIndex={-1}
             >
               <div className="flex items-center justify-between mb-3">
-                <div>
+                <div className='text-left'> 
                   <strong className="text-sm">Animations</strong>
                   <div className="text-[11px] text-white/60">Copy small animation snippets</div>
                 </div>
@@ -192,7 +192,7 @@ export default function AnimationPanel() {
 
               <div className="space-y-3 overflow-y-auto max-h-[52vh] pr-1">
                 {effectiveTab === 'library' && (
-                  <div className="space-y-3">
+                  <div className="space-y-3 ">
                     {[...localSnippets, ...snippets].map(s => (
                       <SnippetItem key={s.id} item={s} />
                     ))}
