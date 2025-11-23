@@ -1,0 +1,232 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+html, body, #root {
+  min-height: 100vh;
+  /* animated full-viewport background gradient */
+  background: linear-gradient(120deg, #071124 0%, #0b1220 30%, #0f1724 60%, #08101a 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 18s ease infinite;
+  background-attachment: fixed;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Hero and modal animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fadeUp {
+  animation: fadeUp 700ms cubic-bezier(.2,.9,.2,1) both;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 260ms cubic-bezier(.2,.9,.2,1) both;
+}
+
+/* Small decorative animations for Home feature cards */
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes pulseScale {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+@keyframes slowRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pulse-soft { animation: pulseScale 1.8s ease-in-out infinite; }
+.animate-rotate-slow { animation: slowRotate 8s linear infinite; }
+
+.feature-icon { width: 56px; height: 56px; display: inline-flex; align-items: center; justify-content: center; }
+
+/* Mouse-follow light effect for Home feature cards */
+.home-card {
+  position: relative;
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+}
+.home-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.08), transparent 12%);
+  transition: background 120ms linear;
+  mix-blend-mode: overlay;
+  border-radius: inherit;
+}
+
+/* Modern static about card styling */
+.about-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.about-card .accent {
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(180deg,#7c3aed,#06b6d4);
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+/* CodeViewer animations */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulseCopy { 0% { transform: scale(1); } 50% { transform: scale(1.06); } 100% { transform: scale(1); } }
+@keyframes glow { 0% { box-shadow: 0 0 0 rgba(124,58,237,0); } 50% { box-shadow: 0 6px 30px rgba(99,102,241,0.08); } 100% { box-shadow: 0 0 0 rgba(124,58,237,0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.cv-fade {
+  animation: fadeInUp 260ms cubic-bezier(.2,.9,.2,1) both;
+}
+.cv-slide {
+  animation: slideIn 260ms ease both;
+}
+.iframe-wrap { transition: transform 260ms ease, box-shadow 260ms ease, opacity 260ms ease; }
+.iframe-wrap.loading { transform: scale(.995); opacity: .85; }
+.iframe-wrap.loaded { transform: scale(1); opacity: 1; box-shadow: 0 12px 40px rgba(2,6,23,0.6); }
+.copy-anim { animation: pulseCopy 420ms cubic-bezier(.2,.9,.2,1); }
+.terminal-glow { animation: glow 1200ms ease-in-out infinite; }
+
+/* small flicker for code block to feel alive */
+@keyframes codeFlicker { 0% { opacity: 0.98 } 50% { opacity: 1 } 100% { opacity: 0.98 } }
+.code-flicker { animation: codeFlicker 1400ms linear infinite; }
+
+
+/* Card tilt and shine */
+@keyframes enterUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.fade-stagger { animation: enterUp 360ms cubic-bezier(.2,.9,.2,1) both; animation-delay: var(--i, 0ms); }
+
+.card-tilt { transform-style: preserve-3d; transition: transform 180ms ease, box-shadow 180ms ease; will-change: transform; }
+.card-tilt:hover { box-shadow: 0 12px 30px rgba(2,6,23,0.45); }
+.card-tilt-inner { transform: perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)); }
+
+.card-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02) 40%, transparent 60%);
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transform: translateX(var(--sx, 0%));
+  transition: opacity 240ms ease, transform 360ms ease;
+  border-radius: inherit;
+}
+.card-tilt:hover.card-shine::after { opacity: 1; transform: translateX(30%); }
+
+.selected-pop { animation: pop 320ms cubic-bezier(.2,.9,.2,1); }
+@keyframes pop { 0% { transform: scale(.98); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+
+
+
+.checkmark {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: draw 420ms ease forwards 120ms;
+}
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  /* ensure background fills behind app */
+  background-color: transparent;
+  /* allow only the page scrollbar */
+  overflow-y: auto;
+}
+
+/* Prevent horizontal scrolling caused by decorative absolute elements */
+body, html {
+  overflow-x: hidden;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
