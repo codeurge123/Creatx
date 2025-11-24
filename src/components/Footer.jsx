@@ -220,6 +220,7 @@ export default function Footer() {
                   Please enter a valid email or try again.
                 </div>
               )}
+              {status === "idle" && (<div className="text-slate-500">We respect your privacy.</div>)}
             </div>
           </div>
         </div>
@@ -269,6 +270,7 @@ export default function Footer() {
                 onClick={() => {
                   setShowModal(false);
                   setStatus("idle");
+                  setEmail("");
                 }}
                 className="px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white"
               >

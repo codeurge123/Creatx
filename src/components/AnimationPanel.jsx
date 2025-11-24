@@ -224,7 +224,7 @@ export default function AnimationPanel() {
             title="Open animations"
               className="w-12 h-12 rounded-full bg-indigo-600 shadow-lg flex items-center justify-center ring-2 ring-white/6"
           >
-            <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
         </div>
       </div>
