@@ -1,4 +1,5 @@
-import { useState } from "react";
+// App.jsx
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import CardGrid from "./components/CardGrid";
@@ -151,39 +152,204 @@ const sampleCards = [
     js: `function burstConfetti(el){for(let i=0;i<30;i++){const p=document.createElement('span');p.style.position='absolute';p.style.width='8px';p.style.height='8px';p.style.background=['#f97316','#f43f5e','#06b6d4','#8b5cf6'][Math.floor(Math.random()*4)];p.style.left='50%';p.style.top='50%';p.style.opacity=1;p.style.transform='translate(-50%,-50%)';p.style.borderRadius='2px';el.appendChild(p);const vx=(Math.random()-0.5)*12;const vy=-Math.random()*12;const rot=(Math.random()-0.5)*720;const dur=600+Math.random()*600;requestAnimationFrame(()=>{p.animate([{transform:\`translate(-50%,-50%) translate(\${vx*0}px,\${vy*0}px) rotate(0deg)\` ,opacity:1},{transform:\`translate(-50%,-50%) translate(\${vx*10}px,\${vy*10}px) rotate(\${rot}deg)\`,opacity:0}],{duration:dur,easing:'cubic-bezier(.2,.9,.3,1)'}).onfinish=()=>p.remove()})}}document.querySelector('.confetti-btn').addEventListener('click',function(){burstConfetti(this)})`,
     category: "js",
   },
+  {
+    id: "wave-loader",
+    title: "Wave Loader",
+    description: "Bouncing wave bars animation",
+    language: "HTML / CSS",
+    html: `<div class="wave"><span></span><span></span><span></span><span></span><span></span></div>`,
+    css: `.wave{display:flex;gap:6px;align-items:end;height:120px;justify-content:center}
+.wave span{width:8px;height:20px;background:#3b82f6;border-radius:4px;animation:wave 1s infinite ease-in-out}
+.wave span:nth-child(2){animation-delay:.1s}
+.wave span:nth-child(3){animation-delay:.2s}
+.wave span:nth-child(4){animation-delay:.3s}
+.wave span:nth-child(5){animation-delay:.4s}
+@keyframes wave{0%,100%{height:20px}50%{height:60px}}`,
+    js: "",
+    category: "css",
+  },
+
+  {
+    id: "rotate-border",
+    title: "Rotating Border Loader",
+    description: "Circular loader using rotating borders",
+    language: "HTML / CSS",
+    html: `<div class="ring"></div>`,
+    css: `.ring{width:60px;height:60px;border-radius:50%;
+border:6px solid transparent;border-top-color:#06b6d4;border-right-color:#3b82f6;
+animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}`,
+    js: "",
+    category: "css",
+  },
+
+  {
+    id: "heart-pulse",
+    title: "Heart Pulse",
+    description: "Beating heart animation",
+    language: "HTML / CSS",
+    html: `<div class="heart"></div>`,
+    css: `.heart{width:60px;height:60px;position:relative;
+background:#f43f5e;transform:rotate(45deg);animation:pulse 1.2s infinite}
+.heart::before,.heart::after{content:"";position:absolute;width:60px;height:60px;
+background:#f43f5e;border-radius:50%}
+.heart::before{left:-50%}
+.heart::after{top:-50%}
+@keyframes pulse{0%,100%{transform:scale(1) rotate(45deg)}
+50%{transform:scale(1.2) rotate(45deg)}}`,
+    js: "",
+    category: "css",
+  },
+
+  {
+    id: "mask-text",
+    title: "Text Reveal Mask",
+    description: "Smooth masked text reveal animation",
+    language: "HTML / CSS",
+    html: `<h2 class="mask-text">Creatx Animations</h2>`,
+    css: `.mask-text{font-size:2rem;font-weight:700;position:relative;overflow:hidden}
+.mask-text::after{content:"";position:absolute;left:0;top:0;width:100%;height:100%;
+background:#06b6d4;animation:reveal 1.6s forwards}
+@keyframes reveal{to{transform:translateX(100%)}}`,
+    js: "",
+    category: "css",
+  },
+
+  {
+    id: "elastic-pop",
+    title: "Elastic Pop Button",
+    description: "Spring pop button hover animation",
+    language: "HTML / CSS",
+    html: `<button class="pop-btn">Hover Me</button>`,
+    css: `.pop-btn{padding:.7rem 1.2rem;background:#10b981;color:white;
+border-radius:8px;border:none;font-weight:600;transition:transform .2s}
+.pop-btn:hover{transform:scale(1.15)}
+.pop-btn:active{transform:scale(.95)}`,
+    js: "",
+    category: "css",
+  },
+
+  {
+    id: "cursor-trail",
+    title: "Cursor Trail Dots",
+    description: "Dots follow cursor with a smooth delay",
+    language: "HTML / CSS / JS",
+    html: `<div class="trail"></div>`,
+    css: `.trail{position:fixed;pointer-events:none;width:12px;height:12px;
+background:#06b6d4;border-radius:50%;transform:translate(-50%,-50%);
+transition:transform .12s ease-out;z-index:9999}`,
+    js: `const dot=document.querySelector('.trail');
+window.addEventListener('mousemove',e=>{
+ dot.style.transform=\`translate(\${e.clientX}px,\${e.clientY}px)\`;
+});`,
+    category: "js",
+  },
+
+  {
+    id: "autotype-words",
+    title: "Auto Typing Words",
+    description: "Looping auto-typing effect",
+    language: "HTML / CSS / JS",
+    html: `<div class="auto-type"></div>`,
+    css: `.auto-type{font-size:1.3rem;font-weight:700;color:#3b82f6;font-family:monospace}`,
+    js: `const words=["Animate","Create","Design","Build"];
+let i=0,j=0,el=document.querySelector('.auto-type');
+function write(){
+  el.textContent=words[i].slice(0,j++);
+  if(j<=words[i].length) setTimeout(write,120);
+  else{ setTimeout(()=>{ j=0; i=(i+1)%words.length; write(); },700); }
+}
+write();`,
+    category: "js",
+  },
+
+  {
+    id: "sparkle-hover",
+    title: "Sparkle Hover",
+    description: "Tiny sparkles on button hover",
+    language: "HTML / CSS / JS",
+    html: `<button class="spark-btn">Hover</button><div class="spark-container"></div>`,
+    css: `.spark-btn{position:relative;padding:10px 16px;background:#3b82f6;color:white;
+border:none;border-radius:8px;font-weight:600}
+.spark{position:absolute;width:6px;height:6px;background:white;border-radius:50%;
+pointer-events:none;opacity:0;animation:spark .6s forwards}
+@keyframes spark{0%{transform:scale(1);opacity:1}
+100%{transform:scale(3);opacity:0}}`,
+    js: `const container=document.querySelector('.spark-container');
+document.querySelector('.spark-btn').addEventListener('mousemove',e=>{
+  const s=document.createElement('span');
+  s.className='spark';
+  s.style.left=e.clientX+'px';
+  s.style.top=e.clientY+'px';
+  container.appendChild(s);
+  setTimeout(()=>s.remove(),600);
+});`,
+    category: "js",
+  },
+
+  {
+    id: "slide-panel",
+    title: "Slide-in Panel",
+    description: "Side panel slides in with JS toggle",
+    language: "HTML / CSS / JS",
+    html: `<button class="open-panel">Open</button><div class="panel">Hello!</div>`,
+    css: `.panel{position:fixed;right:-200px;top:0;width:200px;height:100vh;
+background:#1f2937;color:white;display:flex;align-items:center;
+justify-content:center;transition:.3s}
+.panel.show{right:0}
+.open-panel{padding:8px 14px;background:#06b6d4;color:white;border:none}`,
+    js: `document.querySelector('.open-panel').onclick=()=>{
+ document.querySelector('.panel').classList.toggle('show');
+};`,
+    category: "js",
+  },
+
+  {
+    id: "floating-emojis",
+    title: "Floating Reaction Emojis",
+    description: "Emojis float upward on click",
+    language: "HTML / CSS / JS",
+    html: `<div class="emoji-box"></div><button class="emoji-btn">React</button>`,
+    css: `.emoji{position:absolute;font-size:1.6rem;
+animation:floatUp 1.8s forwards}
+@keyframes floatUp{to{transform:translateY(-80px);opacity:0}}`,
+    js: `document.querySelector('.emoji-btn').onclick=()=>{
+  const e=document.createElement('div');
+  e.className='emoji';
+  e.textContent=['❤️','🔥','🎉','✨'][Math.floor(Math.random()*4)];
+  e.style.left=100+'px';
+  e.style.top=200+'px';
+  document.body.appendChild(e);
+  setTimeout(()=>e.remove(),1800);
+};`,
+    category: "js",
+  },
 ];
 
 function Library({ selected, setSelected, category, setCategory, cards }) {
   return (
     <div className="app-body flex flex-col md:flex-row gap-6">
+      {/* Left panel: bounded height + hidden scrollbar */}
       <aside className="left-panel md:w-80">
         <div className="sticky top-20">
-          <div className="mb-4 flex items-center gap-2">
+          <div className="mb-4 flex items-center gap-2 overflow-x-auto md:overflow-visible py-2">
             <button
               onClick={() => {
                 setCategory("all");
                 setSelected(cards[0]);
               }}
-              className={`px-3 py-1 rounded-full text-sm ${
-                category === "all"
-                  ? "bg-indigo-600 text-white"
-                  : "text-white/80 bg-white/3"
-              }`}
+              className={`px-3 py-1 rounded-full text-sm ${category === "all" ? "bg-indigo-600 text-white" : "text-white/80 bg-white/3"
+                }`}
             >
               All
             </button>
             <button
               onClick={() => {
                 setCategory("css");
-                setSelected(
-                  cards.find((s) => s.category === "css") || cards[0]
-                );
+                setSelected(cards.find((s) => s.category === "css") || cards[0]);
               }}
-              className={`px-3 py-1 rounded-full text-sm ${
-                category === "css"
-                  ? "bg-indigo-600 text-white"
-                  : "text-white/80 bg-white/3"
-              }`}
+              className={`px-3 py-1 rounded-full text-sm ${category === "css" ? "bg-indigo-600 text-white" : "text-white/80 bg-white/3"
+                }`}
             >
               CSS
             </button>
@@ -192,26 +358,29 @@ function Library({ selected, setSelected, category, setCategory, cards }) {
                 setCategory("js");
                 setSelected(cards.find((s) => s.category === "js") || cards[0]);
               }}
-              className={`px-3 py-1 rounded-full text-sm ${
-                category === "js"
-                  ? "bg-indigo-600 text-white"
-                  : "text-white/80 bg-white/3"
-              }`}
+              className={`px-3 py-1 rounded-full text-sm ${category === "js" ? "bg-indigo-600 text-white" : "text-white/80 bg-white/3"
+                }`}
             >
               JS
             </button>
           </div>
-          <CardGrid
-            cards={cards.filter((c) =>
-              category === "all" ? true : c.category === category
-            )}
-            onSelect={setSelected}
-            selectedId={selected?.id}
-          />
+
+          {/* LEFT-SIDE SCROLL ONLY */}
+          <div className="cardgrid-scroll max-h-[65vh] overflow-auto pr-2">
+            <CardGrid
+              cards={cards.filter((c) => (category === "all" ? true : c.category === category))}
+              onSelect={setSelected}
+              selectedId={selected?.id}
+            />
+          </div>
         </div>
       </aside>
-      <main className="right-panel flex-1">
-        <CodeViewer card={selected} />
+
+      {/* RIGHT panel: NO internal scrolling */}
+      <main className="right-panel flex-1 min-w-0">
+        <div className="preview-wrap bg-white/5 rounded-lg p-4 min-h-[320px] overflow-visible">
+          <CodeViewer card={selected} />
+        </div>
       </main>
     </div>
   );
@@ -220,13 +389,21 @@ function Library({ selected, setSelected, category, setCategory, cards }) {
 function App() {
   const [selected, setSelected] = useState(sampleCards[0]);
   const [category, setCategory] = useState("all");
+  const [cards] = useState(sampleCards);
+
+  useEffect(() => {
+    const filtered = category === "all" ? cards : cards.filter((c) => c.category === category);
+    if (!filtered.some((c) => c.id === selected?.id)) {
+      setSelected(filtered[0] || cards[0] || null);
+    }
+  }, [category, cards]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <BrowserRouter>
-      <div className="w-full min-h-screen text-white">
+      <div className="w-full min-h-screen text-white flex flex-col">
         <Navbar />
 
-        <main className="site-main max-w-6xl mx-auto pt-28 pb-8 px-4">
+        <main className="site-main max-w-6xl mx-auto pt-28 pb-8 px-4 flex-1 w-full">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/docs" element={<DocsShell />} />
@@ -238,16 +415,19 @@ function App() {
                   setSelected={setSelected}
                   category={category}
                   setCategory={setCategory}
-                  cards={sampleCards}
+                  cards={cards}
                 />
               }
             />
             <Route path="/create" element={<Create />} />
           </Routes>
         </main>
+
         <Footer />
 
-        <AnimationPanel />
+        <div className="hidden md:block">
+          <AnimationPanel />
+        </div>
       </div>
     </BrowserRouter>
   );

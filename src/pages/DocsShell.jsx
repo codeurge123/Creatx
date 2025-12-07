@@ -52,7 +52,7 @@ async function copyToClipboard(text) {
   }
 }
 
-export default function DocsPage() {
+export default function DocsShell() {
   const [html, setHtml] = useState(SAMPLE_HTML);
   const [css, setCss] = useState(SAMPLE_CSS);
   const [js, setJs] = useState(SAMPLE_JS);
