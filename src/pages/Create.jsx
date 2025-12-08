@@ -426,21 +426,21 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                 <div className="ml-3 text-xs text-white/70 flex gap-2">
                   <button
                     onClick={() => setActiveTab("html")}
-                    className={`text-xs px-2 py-1 rounded ${activeTab === "html" ? "bg-white/6 text-white" : "bg-white/4 text-white/60"}`}
+                    className={`text-xs px-2 py-1 rounded ${activeTab === "html" ? "bg-white/6 bg-indigo-600 text-white" : "bg-white/4 bg-gray-800 text-white/60"}`}
                     title="Show HTML editor"
                   >
                     HTML
                   </button>
                   <button
                     onClick={() => setActiveTab("css")}
-                    className={`text-xs px-2 py-1 rounded ${activeTab === "css" ? "bg-white/6 text-white" : "bg-white/4 text-white/60"}`}
+                    className={`text-xs px-2 py-1 rounded ${activeTab === "css" ? "bg-white/6 bg-indigo-600 text-white" : "bg-white/4 bg-gray-800 text-white/60"}`}
                     title="Show CSS editor"
                   >
                     CSS
                   </button>
                   <button
                     onClick={() => setActiveTab("js")}
-                    className={`text-xs px-2 py-1 rounded ${activeTab === "js" ? "bg-white/6 text-white" : "bg-white/4 text-white/60"}`}
+                    className={`text-xs px-3 py-1 rounded ${activeTab === "js" ? "bg-white/6 bg-indigo-600 text-white" : "bg-white/4 bg-gray-800 text-white/60"}`}
                     title="Show JS editor"
                   >
                     JS
@@ -448,7 +448,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                 </div>
 
                 <div className="ml-auto flex items-center gap-2">
-                  <button onClick={formatActive} title="Format current editor" className="px-3 py-1 rounded bg-white/6 text-xs">Format</button>
+                  <button onClick={formatActive} title="Format current editor" className="px-3 py-1 rounded bg-gray-800 text-xs">Format</button>
                   <button
                     onClick={() => {
                       setAiOpen(true);
@@ -457,7 +457,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                       setAiError("");
                       setParsedResult(null);
                     }}
-                    className="px-3 py-1 rounded bg-emerald-600 text-white text-sm"
+                    className="px-3 py-1 rounded text-white text-sm bg-gradient-to-br from-[#7C3AED] to-[#3B82F6] hover:from-[#9333EA] hover:to-[#2563EB] transition-colors duration-150"
                     title="Open AI Assistant"
                   >
                     AI Assist
@@ -537,7 +537,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                   setSaved(false);
                   setError("");
                 }}
-                className="px-3 py-2 rounded bg-white/4"
+                className="px-3 py-2 rounded bg-white/4 bg-gray-800"
               >
                 Reset
               </button>
@@ -558,7 +558,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
           {/* Preview column */}
           <div>
             <div className="mb-2 text-md text-white/70">Live preview</div>
-            <div className="border border-white/6 rounded bg-black/40" style={{ height: 635 }}>
+            <div className="border dark:border-white/6 rounded dark:bg-black" style={{ height: 635 }}>
               {previewUrl ? (
                 <iframe title="preview" src={previewUrl} className="w-full h-full" sandbox="allow-scripts allow-same-origin" />
               ) : (
@@ -683,7 +683,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                 <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div className="flex items-center gap-2">
                     <label className="text-sm text-white/80">Insert target:</label>
-                    <select value={aiTarget} onChange={(e) => setAiTarget(e.target.value)} className="bg-white/4 p-1 rounded text-white text-sm ml-2">
+                    <select value={aiTarget} onChange={(e) => setAiTarget(e.target.value)} className="bg-white/4 p-1 rounded text-white text-sm ml-2 bg-gray-800">
                       <option value="full">HTML + CSS + JS (all)</option>
                       <option value="html">HTML only</option>
                       <option value="css">CSS only</option>

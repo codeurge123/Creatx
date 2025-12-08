@@ -338,7 +338,7 @@ function Library({ selected, setSelected, category, setCategory, cards }) {
                 setCategory("all");
                 setSelected(cards[0]);
               }}
-              className={`px-3 py-1 rounded-full text-sm ${category === "all" ? "bg-indigo-600 text-white" : "text-white/80 bg-white/3"
+              className={`px-3 py-1 rounded-full text-sm ${category === "all" ? "bg-indigo-600 text-white" : "text-white/80 bg-gray-800 bg-white/3"
                 }`}
             >
               All
@@ -348,7 +348,7 @@ function Library({ selected, setSelected, category, setCategory, cards }) {
                 setCategory("css");
                 setSelected(cards.find((s) => s.category === "css") || cards[0]);
               }}
-              className={`px-3 py-1 rounded-full text-sm ${category === "css" ? "bg-indigo-600 text-white" : "text-white/80 bg-white/3"
+              className={`px-3 py-1 rounded-full text-sm ${category === "css" ? "bg-indigo-600 text-white" : "text-white/80 bg-white/3 bg-gray-800"
                 }`}
             >
               CSS
@@ -358,7 +358,7 @@ function Library({ selected, setSelected, category, setCategory, cards }) {
                 setCategory("js");
                 setSelected(cards.find((s) => s.category === "js") || cards[0]);
               }}
-              className={`px-3 py-1 rounded-full text-sm ${category === "js" ? "bg-indigo-600 text-white" : "text-white/80 bg-white/3"
+              className={`px-3 py-1 rounded-full text-sm ${category === "js" ? "bg-indigo-600 text-white" : "text-white/80 bg-gray-800"
                 }`}
             >
               JS

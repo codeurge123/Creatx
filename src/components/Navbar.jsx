@@ -19,10 +19,50 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-2">
-            <NavLink to="/" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Home</NavLink>
-            <NavLink to="/docs" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Docs</NavLink>
-            <NavLink to="/library" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Animations</NavLink>
-            <NavLink to="/create" className="px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-colors duration-75">Create</NavLink>
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                isActive
+                  ? "relative px-4 py-2 rounded-xl font-semibold bg-gradient-to-br from-[#7C3AED] to-[#3B82F6] bg-clip-text text-transparent scale-105 transition-all duration-200 nav-underline nav-underline-active"
+                  : "relative px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-all duration-200 nav-underline"
+              }
+            >
+              Home
+            </NavLink>
+
+            <NavLink
+              to="/docs"
+              className={({ isActive }) =>
+                isActive
+                  ? "relative px-4 py-2 rounded-xl font-semibold bg-gradient-to-br from-[#7C3AED] to-[#3B82F6] bg-clip-text text-transparent scale-105 transition-all duration-200 nav-underline nav-underline-active"
+                  : "relative px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-all duration-200 nav-underline"
+              }
+            >
+              Docs
+            </NavLink>
+
+            <NavLink
+              to="/library"
+              className={({ isActive }) =>
+                isActive
+                  ? "relative px-4 py-2 rounded-xl font-semibold bg-gradient-to-br from-[#7C3AED] to-[#3B82F6] bg-clip-text text-transparent scale-105 transition-all duration-200 nav-underline nav-underline-active"
+                  : "relative px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-all duration-200 nav-underline"
+              }
+            >
+              Animations
+            </NavLink>
+
+            <NavLink
+              to="/create"
+              className={({ isActive }) =>
+                isActive
+                  ? "relative px-4 py-2 rounded-xl font-semibold bg-gradient-to-br from-[#7C3AED] to-[#3B82F6] bg-clip-text text-transparent scale-105 transition-all duration-200 nav-underline nav-underline-active"
+                  : "relative px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-all duration-200 nav-underline"
+              }
+            >
+              Create
+            </NavLink>
+
           </div>
         </div>
       </nav>

@@ -99,17 +99,17 @@ export default function AnimationPanel() {
             <button
               onClick={() => copy(item.code, item.id, item.title)}
               aria-pressed={copiedId === item.id}
-              className={`text-xs px-3 py-1 rounded shadow-sm transition-colors duration-150 ${copiedId===item.id ? 'bg-indigo-500 text-white copy-anim' : 'bg-indigo-600 hover:bg-indigo-500 text-white'}`}>
+              className={`text-xs px-3 py-1 rounded shadow-sm transition-colors duration-150 ${copiedId===item.id ? 'bg-indigo-500 text-white copy-anim' : 'bg-indigo-600 hover:bg-indigo-500  text-white'}`}>
               {copiedId===item.id ? 'Copied' : 'Copy'}
             </button>
 
-            <button onClick={() => setExpandedId(isExpanded ? null : item.id)} aria-expanded={isExpanded} className="text-xs px-2 py-1 rounded bg-white/6 text-white/90 hover:bg-white/8">
+            <button onClick={() => setExpandedId(isExpanded ? null : item.id)} aria-expanded={isExpanded} className="text-xs px-2 py-1 rounded bg-white/6 text-white/90 hover:bg-white/8 bg-gray-800">
               {isExpanded ? 'Hide' : 'Show'}
             </button>
 
             {/** if this snippet exists in localSnippets (owner) show Delete */}
             {localSnippets.some(s => s.id === item.id) && (
-              <button onClick={() => { if (confirm('Delete this animation?')) deleteSnippet(item.id) }} className="text-xs px-2 py-1 rounded bg-red-600 ml-1">Delete</button>
+              <button onClick={() => { if (confirm('Delete this animation?')) deleteSnippet(item.id) }} className="text-xs px-2 py-1 rounded bg-red-600 mt-16 relative right-20">Delete</button>
             )}
           </div>
         </div>
@@ -181,13 +181,13 @@ export default function AnimationPanel() {
                   <div className="text-[11px] text-white/60">Copy small animation snippets</div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => setOpen(false)} className="text-xs px-2 py-1 rounded bg-white/3">Close</button>
+                  <button onClick={() => setOpen(false)} className="text-xs px-2 py-1 bg-gray-800 rounded bg-white/3">Close</button>
                 </div>
               </div>
 
               <div className="mb-3 flex gap-2">
-                <button onClick={() => setTab('library')} className={`px-3 py-1 rounded text-sm ${effectiveTab === 'library' ? 'bg-indigo-600 text-white' : 'bg-white/4 text-white/80'}`}>Library</button>
-                <button onClick={() => setTab('shared')} className={`px-3 py-1 rounded text-sm ${effectiveTab === 'shared' ? 'bg-indigo-600 text-white' : 'bg-white/4 text-white/80'}`}>Shared</button>
+                <button onClick={() => setTab('library')} className={`px-3 py-1 rounded text-sm ${effectiveTab === 'library' ? 'bg-indigo-600 text-white' : 'bg-gray-800 bg-white/4 text-white/80'}`}>Library</button>
+                <button onClick={() => setTab('shared')} className={`px-3 py-1 rounded text-sm ${effectiveTab === 'shared' ? 'bg-indigo-600 text-white' : 'bg-white/4  text-white/80 bg-gray-800'}`}>Shared</button>
               </div>
 
               <div className="space-y-3 overflow-y-auto max-h-[52vh] pr-1">
@@ -222,7 +222,7 @@ export default function AnimationPanel() {
             aria-expanded={open}
             aria-controls="animation-panel"
             title="Open animations"
-              className="w-12 h-12 rounded-full bg-indigo-600 shadow-lg flex items-center justify-center ring-2 ring-white/6"
+              className="w-12 h-12 rounded-full bg-indigo-600 shadow-lg flex items-center justify-center ring-2 ring-white/6 "
           >
             <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>

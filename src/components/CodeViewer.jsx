@@ -207,7 +207,7 @@ export default function CodeViewer({ card }) {
               className={`px-3 py-1 text-sm rounded ${
                 tab === "preview"
                   ? "bg-indigo-600 text-white"
-                  : "text-slate-200/80 hover:bg-white/5"
+                  : "text-slate-200/80 hover:bg-white/5 bg-gray-800"
               }`}
             >
               Preview
@@ -217,7 +217,7 @@ export default function CodeViewer({ card }) {
               className={`ml-3 px-3 py-1 text-sm rounded ${
                 tab === "code"
                   ? "bg-indigo-600 text-white"
-                  : "text-slate-200/80 hover:bg-white/5"
+                  : "text-slate-200/80 hover:bg-white/5 bg-gray-800"
               }`}
             >
               Code
@@ -225,7 +225,7 @@ export default function CodeViewer({ card }) {
           </div>
           <button
             onClick={copy}
-            className={`px-3 py-1 bg-white/6 hover:bg-white/8 text-sm rounded ${
+            className={`px-3 py-1 bg-white/6 bg-gray-800 hover:bg-white/8 text-sm rounded ${
               copied ? "copy-anim" : ""
             }`}
           >
