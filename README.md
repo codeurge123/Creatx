@@ -1,16 +1,59 @@
-# React + Vite
+# Creatx
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Creatx** — a React + Vite UI project (in active development).  
+Live demo: https://creatxui.vercel.app
 
-Currently, two official plugins are available:
+Currently working on this — stay tuned for updates.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## About
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Creatx is a modern frontend UI built with React and Vite, using Tailwind CSS for styling. The repository is a lightweight starter and a workspace for building a responsive, component-driven UI. The project aims to be an approachable base for building pixel-perfect UI prototypes and production-ready interfaces.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech stack
+
+- React (Vite)
+- Tailwind CSS
+- PostCSS
+- ESLint
+- Vite for fast dev server and build
+- Deployed on Vercel (see demo link above)
+
+---
+
+## Features / What’s included
+
+- Minimal, fast React + Vite configuration
+- Tailwind CSS configured and ready
+- Basic ESLint setup
+- Production build configuration (Vite)
+- Deployment config for Vercel
+
+> Note: This repo is a work-in-progress. More UI components and features will be added over time.
+
+---
+
+## Project structure
+
+A high-level view of the repo:
+<br>
+├─ src<br>
+├─ index.html<br>
+├─ package.json<br>
+├─ tailwind.config.js<br>
+├─ postcss.config.js<br>
+├─ vite.config.js<br>
+├─ vercel.json<br>
+└─ README.md
+
+---
+
+## Getting started (developer setup)
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/codeurge123/Creatx.git
+   cd Creatx
