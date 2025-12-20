@@ -55,16 +55,29 @@ export default function Create() {
   // AI modal states
   const [aiOpen, setAiOpen] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
-  const [aiTarget, setAiTarget] = useState("full"); // "html","css","js","full"
+  const [aiTarget, setAiTarget] = useState("full");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState("");
   const [aiError, setAiError] = useState("");
-  const [parsedResult, setParsedResult] = useState(null); // {html,css,js} formatted or null
+  const [parsedResult, setParsedResult] = useState(null);
+  const [fullscreenPreview, setFullscreenPreview] = useState(false);
 
   useEffect(() => {
     setSaved(false);
     setError("");
   }, [title, html, css, js, share]);
+
+  // Prevent body scroll when fullscreen preview is open
+  useEffect(() => {
+    if (fullscreenPreview) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [fullscreenPreview]);
 
   // build preview blob
   useEffect(() => {
@@ -103,9 +116,7 @@ export default function Create() {
       s.unshift(item);
       localStorage.setItem(SHARED_KEY, JSON.stringify(s));
     }
-    // record creation
     pushCreateLog(now);
-    // notify other components
     window.dispatchEvent(new Event("creatx:snippets-changed"));
     setSaved(true);
   };
@@ -120,25 +131,18 @@ export default function Create() {
 
   useEffect(() => {
     let timer;
-
     if (error) {
       timer = setTimeout(() => {
         setError(null);
-      }, 10000); // 10 seconds
+      }, 10000);
     }
-
     if (saved) {
       timer = setTimeout(() => {
         setSaved(false);
-      }, 10000); // 10 seconds
+      }, 10000);
     }
-
     return () => clearTimeout(timer);
   }, [error, saved]);
-
-  //
-  // ---------------- formatting helpers ----------------
-  //
 
   function formatHtml(src) {
     try {
@@ -150,7 +154,6 @@ export default function Create() {
         if (/^<\/\w/.test(trimmed)) depth = Math.max(depth - 1, 0);
         const pad = "  ".repeat(depth);
         const res = pad + trimmed;
-        // increase depth for opening tags that are not self-closing or void
         if (/^<\w[^>]*>(?!.*<\/\w)/.test(trimmed) && !/\/>$/.test(trimmed) && !/^<!(--)?/.test(trimmed)) {
           if (!/\/>$/i.test(trimmed) && !/^<\/\w/.test(trimmed)) depth++;
         } else if (/^<\w[^>]*[^\/]>$/.test(trimmed) && !/^<!(--)?/.test(trimmed)) {
@@ -201,14 +204,8 @@ export default function Create() {
     }
   }
 
-  //
-  // ---------------- AI helpers ----------------
-  //
-
   function parseGenerated(generated) {
     const out = { html: "", css: "", js: "" };
-
-    // markers
     const markerHtml = /<!--\s*HTML\s*-->([\s\S]*?)?(?=(\/\*|\<!--|$))/i;
     const markerCss = /\/\*\s*CSS\s*\*\/([\s\S]*?)(?=(\/\*|\<!--|$))/i;
     const markerJs = /\/\*\s*JS\s*\*\/([\s\S]*?)(?=(\/\*|\<!--|$))/i;
@@ -224,7 +221,6 @@ export default function Create() {
       return out;
     }
 
-    // fenced code blocks
     const fenceHtml = /```html\s*([\s\S]*?)```/i;
     const fenceCss = /```css\s*([\s\S]*?)```/i;
     const fenceJs = /```(?:js|javascript)\s*([\s\S]*?)```/i;
@@ -266,7 +262,7 @@ export default function Create() {
 <!-- Generated animation for: ${safePrompt} -->
 <div class="ai-card">
   <div class="ai-dot"></div>
-  <div class="ai-text">` + safePrompt + `</div>
+  <div class="ai-text">${safePrompt}</div>
 </div>
 
 /* CSS */
@@ -280,8 +276,6 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
 `;
   }
 
-  // IMPORTANT: Generate only fetches and sets preview + parsedResult.
-  // It DOES NOT insert anything automatically into editors.
   async function handleGenerateFromAi() {
     if (!aiPrompt.trim()) {
       setAiError("Please enter a prompt.");
@@ -301,7 +295,6 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
       const generated = await callAiApi(finalPrompt);
       setAiResult(generated || "");
 
-      // parse and format in proper order HTML -> CSS -> JS
       const parsed = parseGenerated(generated || "");
       if (parsed) {
         const formatted = {
@@ -317,12 +310,10 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
       console.error(e);
       setAiError("AI generation failed. See console for details.");
     } finally {
-      // leave spinner visible briefly for smoothness
       setTimeout(() => setAiLoading(false), 300);
     }
   }
 
-  // apply helpers: use parsedResult if available; otherwise paste raw as wrapped comment
   function applyHtml() {
     if (parsedResult && parsedResult.html) {
       setHtml(parsedResult.html);
@@ -330,6 +321,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
       setHtml((prev) => prev + `\n<!-- AI RAW START (HTML) -->\n${aiResult}\n<!-- AI RAW END -->`);
     }
   }
+  
   function applyCss() {
     if (parsedResult && parsedResult.css) {
       setCss(parsedResult.css);
@@ -337,6 +329,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
       setCss((prev) => prev + `\n/* AI RAW START (CSS) */\n${aiResult}\n/* AI RAW END */`);
     }
   }
+  
   function applyJs() {
     if (parsedResult && parsedResult.js) {
       setJs(parsedResult.js);
@@ -345,20 +338,17 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
     }
   }
 
-  // insert all parsed blocks (keeps modal open behaviour same as before)
   function insertParsedBlocks() {
     if (!parsedResult) {
       setAiError("Result couldn't be parsed into separate blocks.");
       return;
     }
-    // Insert in strict order: html, css, js
     if (parsedResult.html) setHtml(parsedResult.html);
     if (parsedResult.css) setCss(parsedResult.css);
     if (parsedResult.js) setJs(parsedResult.js);
     setAiOpen(false);
   }
 
-  // save snippet from aiResult
   function saveAiSnippet() {
     try {
       const now = Date.now();
@@ -376,16 +366,12 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
     }
   }
 
-  // Format current active editor (keeps simple formatters)
   function formatActive() {
     if (activeTab === "html") setHtml((s) => formatHtml(s));
     if (activeTab === "css") setCss((s) => formatCss(s));
     if (activeTab === "js") setJs((s) => formatJs(s));
   }
 
-  //
-  // -------------- UI ----------------
-  //
   return (
     <section className="min-h-[70vh]">
       <div className="max-w-6xl mx-auto bg-white/3 p-6 rounded-lg">
@@ -403,7 +389,6 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Terminal-style editor column (tabbed) */}
           <div>
             <div className="mb-3">
               <label className="text-md text-white/80">Title</label>
@@ -422,7 +407,6 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                   <span className="w-3 h-3 rounded-full bg-green-400" />
                 </div>
 
-                {/* tab buttons — now switch activeTab */}
                 <div className="ml-3 text-xs text-white/70 flex gap-2">
                   <button
                     onClick={() => setActiveTab("html")}
@@ -472,7 +456,6 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                 >
                   <div className="text-[12px] text-white/60 mb-2">user@creatx:~$ editing — showing {activeTab.toUpperCase()}</div>
 
-                  {/* show only the active editor */}
                   {activeTab === "html" && (
                     <div className="mb-2">
                       <div className="text-md text-left text-white/60">HTML</div>
@@ -555,9 +538,17 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
             )}
           </div>
 
-          {/* Preview column */}
           <div>
-            <div className="mb-2 text-md text-white/70">Live preview</div>
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-md text-white/70">Live preview</span>
+              <button
+                onClick={() => setFullscreenPreview(true)}
+                className="px-3 py-1 rounded bg-indigo-600 text-sm hover:bg-indigo-700 transition-colors"
+                title="Open fullscreen preview"
+              >
+                Fullscreen
+              </button>
+            </div>
             <div className="border dark:border-white/6 rounded dark:bg-black" style={{ height: 635 }}>
               {previewUrl ? (
                 <iframe title="preview" src={previewUrl} className="w-full h-full" sandbox="allow-scripts allow-same-origin" />
@@ -595,21 +586,18 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
         </div>
       </div>
 
-      {/* ---------- AI Modal ---------- */}
       {aiOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
-          {/* backdrop - darker navy tint */}
           <div
             className="absolute inset-0"
             onClick={() => setAiOpen(false)}
             style={{ background: "rgba(2,6,23,0.7)" }}
           />
 
-          {/* modal (animated scale+fade) - enlarged */}
           <div
             className="relative z-10 w-full max-w-5xl rounded-lg p-4"
             style={{
-              background: "#041428", // deep navy
+              background: "#041428",
               boxShadow: "0 20px 50px rgba(2,6,23,0.8)",
               border: "1px solid rgba(255,255,255,0.04)",
               maxHeight: "88vh",
@@ -708,14 +696,12 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                           "Generate"
                         )}
                       </button>
-
                     </div>
                   </div>
                 </div>
 
                 {aiError && <div className="mt-3 text-sm text-amber-400">{aiError}</div>}
 
-                {/* result preview */}
                 <div className="mt-4">
                   <div className="text-sm text-white/70 mb-2">AI result (preview)</div>
                   <div className="bg-black p-3 rounded font-mono text-sm text-white/80" style={{ minHeight: 200, maxHeight: 420, overflowY: "auto" }}>
@@ -788,6 +774,62 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
             </div>
 
             <div className="mt-4 text-xs text-white/60">Tip: For best parsing ask the AI to "return code with markers: HTML , /* CSS */, /* JS */".</div>
+          </div>
+        </div>
+      )}
+
+      {fullscreenPreview && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ overflow: 'hidden' }}>
+          <div
+            className="absolute inset-0"
+            onClick={() => setFullscreenPreview(false)}
+            style={{ 
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              background: 'rgba(2,6,23,0.75)'
+            }}
+          />
+
+          <div
+            className="relative z-10 w-[95vw] h-[95vh] rounded-lg overflow-hidden"
+            style={{
+              background: '#000',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.9)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              animation: 'fadeInScale 250ms cubic-bezier(.2,.9,.2,1)',
+            }}
+          >
+            <style>{`
+              @keyframes fadeInScale {
+                0% { transform: scale(.94); opacity: 0 }
+                100% { transform: scale(1); opacity: 1 }
+              }
+            `}</style>
+
+            <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-2 bg-black/80 backdrop-blur-sm border-b border-white/10">
+              <div className="text-white font-medium">{title} - Preview</div>
+              <button
+                onClick={() => setFullscreenPreview(false)}
+                className="text-white hover:text-white bg-red-600 hover:bg-red-700 hover:border-red-700 rounded-md px-3 py-1.5 transition-colors text-sm"
+              >
+                ✕ Close
+              </button>
+            </div>
+
+            <div className="w-full h-full pt-12">
+              {previewUrl ? (
+                <iframe 
+                  title="fullscreen-preview" 
+                  src={previewUrl} 
+                  className="w-full h-full bg-white" 
+                  sandbox="allow-scripts allow-same-origin" 
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full text-white/60">
+                  Preview not available
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
