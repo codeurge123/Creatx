@@ -86,7 +86,13 @@ export default function Home() {
                   <h3 className="text-2xl md:text-3xl font-bold text-white text-left">About Creatx</h3>
                   <p className="mt-4 text-slate-300 text-left text-lg">Creatx is a tiny library of handcrafted micro-interactions and small UI patterns. Each snippet is designed to be lightweight, easy to integrate, and fully customizable so you can drop it into your project and iterate fast.</p>
                   <div className="mt-6 flex items-center gap-4">
-                    <button className="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-md mt-4 text-white font-semibold">Get Started</button>
+                    <button
+                      onClick={
+                        () => {
+                          navigate('/login')
+                        }
+                      }
+                      className="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-md mt-4 text-white font-semibold">Get Started</button>
                     <Link to="/docs"
                       onClick={() => window.scrollTo(0, 0)}
                       className="px-5 py-3 border border-white/10 mt-4 rounded-md text-white/90">See Docs</Link>

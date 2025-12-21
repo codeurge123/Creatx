@@ -63,7 +63,18 @@ export default function Navbar() {
               Create
             </NavLink>
 
+
           </div>
+          <NavLink
+            to="/login"
+            className={({ isActive }) =>
+              isActive
+                ? "px-5 py-2 bg-white/10 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                : "px-5 py-2 bg-indigo-600 text-white hover:text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:bg-indigo-700"
+            }
+          >
+            Login
+          </NavLink>
         </div>
       </nav>
     </header>
