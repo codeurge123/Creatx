@@ -1,6 +1,6 @@
 // App.jsx
 import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route,useLocation } from "react-router-dom";
 import "./App.css";
 import CardGrid from "./components/CardGrid";
 import CodeViewer from "./components/CodeViewer";
@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import AnimationPanel from "./components/AnimationPanel";
 import Home from "./pages/Home";
 import Create from "./pages/Create";
+import Login from "./pages/Login.jsx";
 import DocsShell from "./pages/DocsShell.jsx";
 
 const sampleCards = [
@@ -326,7 +327,18 @@ animation:floatUp 1.8s forwards}
   },
 ];
 
+function FooterController() {
+  const location = useLocation();
+
+  // hide footer only on login page
+  if (location.pathname === "/login") return null;
+
+  return <Footer />;
+}
+
+
 function Library({ selected, setSelected, category, setCategory, cards }) {
+
   return (
     <div className="app-body flex flex-col md:flex-row gap-6">
       {/* Left panel: bounded height + hidden scrollbar */}
@@ -420,10 +432,11 @@ function App() {
               }
             />
             <Route path="/create" element={<Create />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </main>
 
-        <Footer />
+        <FooterController />
 
         <div className="hidden md:block">
           <AnimationPanel />
