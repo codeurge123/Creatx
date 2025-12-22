@@ -258,6 +258,11 @@ export default function AuthDemo() {
             ) : (
                 <Register onNavigate={setCurrentPage} />
             )}
+
+            <div className='absolute bottom-2 text-center w-full text-white/40 text-md select-none border-t pt-2'>
+                These Page work only for demo purpose. Actual authentication system will be implemented in future updates.
+            </div>
+
         </div>
     )
 }
