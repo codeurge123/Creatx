@@ -335,6 +335,14 @@ function FooterController() {
 
   return <Footer />;
 }
+function NavbarController() {
+  const location = useLocation();
+
+  // hide footer only on login page
+  if (location.pathname === "/login") return null;
+
+  return <Navbar />;
+}
 
 
 function Library({ selected, setSelected, category, setCategory, cards }) {
@@ -413,7 +421,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="w-full min-h-screen text-white flex flex-col">
-        <Navbar />
+        <NavbarController />
 
         <main className="site-main max-w-6xl mx-auto pt-28 pb-8 px-4 flex-1 w-full">
           <Routes>
