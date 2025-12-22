@@ -97,7 +97,7 @@ function Login({ onNavigate }) {
                     Don't have an account?{' '}
                     <button
                         onClick={() => onNavigate('register')}
-                        className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
+                        className="text-indigo-400 hover:border-none border-none  p-1 bg-transparent hover:text-indigo-300 font-semibold transition-colors"
                     >
                         Sign Up
                     </button>
@@ -237,7 +237,7 @@ function Register({ onNavigate }) {
                     Already have an account?{' '}
                     <button
                         onClick={() => onNavigate('login')}
-                        className="text-purple-400 hover:text-purple-300 font-semibold transition-colors"
+                        className="text-purple-400 p-1 border-none hover:border-none bg-transparent hover:text-purple-300 font-semibold transition-colors"
                     >
                         Sign In
                     </button>
