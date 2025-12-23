@@ -664,7 +664,7 @@ function App() {
           <AnimationPanel />
         </div>
         <div className="hidden md:block">
-          <AlertNotify message={"This site is currently under maintenance."} />
+          <AlertNotify message={"This site is currently under Construction."} />
         </div>
       </div>
     </BrowserRouter>
