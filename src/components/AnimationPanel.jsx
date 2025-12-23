@@ -26,7 +26,7 @@ const snippets = [
 
 export default function AnimationPanel() {
   // Show panel by default
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const [copiedId, setCopiedId] = useState(null)
   const [announce, setAnnounce] = useState('')
   const panelRef = useRef(null)
