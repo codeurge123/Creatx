@@ -1,6 +1,7 @@
 // App.jsx
 import { useState, useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import "./App.css";
 import CardGrid from "./components/CardGrid";
 import CodeViewer from "./components/CodeViewer";
@@ -635,6 +636,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="w-full min-h-screen text-white flex flex-col">
+        <Analytics />
         <NavbarController />
 
         <main className="site-main max-w-6xl mx-auto pt-28 pb-8 px-4 flex-1 w-full">
