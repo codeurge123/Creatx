@@ -82,7 +82,7 @@ ${selectedCard.js ? `// JavaScript\n${selectedCard.js}` : ''}`;
   };
 
   return (
-    <div className="min-h-screen   text-white p-6">
+    <div className="min-h-screen text-white p-6">
       <div className="max-w-7xl mx-auto">
 
         {/* Category Filters */}
@@ -171,6 +171,7 @@ function AnimationCard({ card, isFavorite, onToggleFavorite, onClick }) {
     <div
       className="relative group bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-2xl overflow-hidden border border-white/10 hover:border-indigo-500/50 transition-all  hover:scale-105"
     >
+      <div>Vineet Chutiya</div>
       {/* Preview Area */}
       <div className="h-48 bg-black/20 flex items-center justify-center p-4">
         <PreviewContent card={card} />
