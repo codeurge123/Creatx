@@ -339,6 +339,117 @@ animation:floatUp 1.8s forwards}
 };`,
     category: "js",
   },
+  {
+    id: "fade-content",
+    title: "Fade Content",
+    description: "Fade-in animation on load",
+    language: "HTML / CSS",
+    html: `<div class="fade-box">Fade Content</div>`,
+    css: `.fade-box{
+  padding:20px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#06b6d4,#3b82f6);
+  color:white;
+  font-weight:600;
+  animation:fadeIn .6s ease-out forwards;
+}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:none}
+}`,
+    js: "",
+    category: "css",
+  },
+
+  {
+    id: "tilted-card",
+    title: "Tilted Card",
+    description: "3D tilt card following cursor",
+    language: "HTML / CSS / JS",
+    html: `<div class="tilt-card">Tilt Me</div>`,
+    css: `.tilt-card{
+  width:220px;
+  height:140px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#8b5cf6,#06b6d4);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  transition:transform .15s ease-out;
+  transform-style:preserve-3d;
+}`,
+    js: `const card=document.querySelector('.tilt-card');
+card.addEventListener('mousemove',e=>{
+  const r=card.getBoundingClientRect();
+  const x=e.clientX-r.left;
+  const y=e.clientY-r.top;
+  const rx=-(y/r.height-0.5)*20;
+  const ry=(x/r.width-0.5)*20;
+  card.style.transform=\`rotateX(\${rx}deg) rotateY(\${ry}deg)\`;
+});
+card.addEventListener('mouseleave',()=>{
+  card.style.transform='rotateX(0) rotateY(0)';
+});`,
+    category: "js",
+  },
+
+  {
+    id: "animated-list",
+    title: "Animated List",
+    description: "Staggered list reveal",
+    language: "HTML / CSS",
+    html: `<ul class="anim-list">
+  <li style="--d:0s">Design</li>
+  <li style="--d:.15s">Develop</li>
+  <li style="--d:.3s">Deploy</li>
+</ul>`,
+    css: `.anim-list{list-style:none;padding:0}
+.anim-list li{
+  margin-bottom:10px;
+  padding:10px 14px;
+  background:#111827;
+  color:white;
+  border-radius:8px;
+  opacity:0;
+  animation:slideUp .4s forwards;
+  animation-delay:var(--d);
+}
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:none}
+}`,
+    js: "",
+    category: "css",
+  },
+
+  {
+    id: "glass-card",
+    title: "Glass Card",
+    description: "Glassmorphism hover animation",
+    language: "HTML / CSS",
+    html: `<div class="glass-card">Glass Card</div>`,
+    css: `.glass-card{
+  width:240px;
+  height:140px;
+  backdrop-filter:blur(14px);
+  background:rgba(255,255,255,.12);
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-weight:600;
+  transition:transform .3s ease;
+}
+.glass-card:hover{
+  transform:scale(1.06);
+}`,
+    js: "",
+    category: "css",
+  },
 ];
 
 function FooterController() {
@@ -494,8 +605,8 @@ function AnimationCard({ card, isFavorite, onToggleFavorite, onClick }) {
       <div className="p-4 cursor-pointer" onClick={onClick}>
         <div className="flex items-start justify-between mb-2">
           <div className="flex-1">
-            <h3 className="font-semibold text-lg text-white">{card.title}</h3>
-            <p className="text-sm text-gray-400 mt-1">{card.description}</p>
+            <h3 className="font-semibold text-lg text-left text-white">{card.title}</h3>
+            <p className="text-sm text-gray-400 text-left mt-1">{card.description}</p>
           </div>
           <button
             onClick={(e) => {

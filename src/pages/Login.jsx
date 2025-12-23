@@ -252,16 +252,19 @@ export default function AuthDemo() {
     const [currentPage, setCurrentPage] = useState('login')
 
     return (
-        <div className="fixed inset-14 overflow-hidden">
+        <div className="min-h-screen text-slate-100 antialiased">
+
+            <div>
+            <h4>
+                For Demo Only | Currently Not working
+            </h4>
+            </div>
+
             {currentPage === 'login' ? (
                 <Login onNavigate={setCurrentPage} />
             ) : (
                 <Register onNavigate={setCurrentPage} />
             )}
-
-            <div className='absolute bottom-2 text-center w-full text-white/40 text-md select-none border-t pt-2'>
-                These Page work only for demo purpose. Actual authentication system will be implemented in future updates.
-            </div>
 
         </div>
     )
