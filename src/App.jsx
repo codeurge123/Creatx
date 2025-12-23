@@ -188,7 +188,7 @@ function AnimationCard({ card, isFavorite, onToggleFavorite, onClick }) {
               e.stopPropagation();
               onToggleFavorite();
             }}
-            className="ml-2 p-2 rounded-full hover:bg-white/10 transition-all"
+            className="ml-2 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all duration-150"
           >
             <Heart
               size={20}
@@ -317,7 +317,7 @@ function AnimationModal({ card, isFavorite, onToggleFavorite, onClose, onCopy, c
             <div className="flex items-center gap-2">
               <button
                 onClick={onToggleFavorite}
-                className="p-2 rounded-full hover:bg-white/10 transition-all"
+                className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all duration-150"
               >
                 <Heart
                   size={24}
@@ -329,9 +329,9 @@ function AnimationModal({ card, isFavorite, onToggleFavorite, onClose, onCopy, c
               </button>
               <button
                 onClick={onClose}
-                className="p-2 rounded-full hover:bg-white/10 transition-all"
+                className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all duration-150"
               >
-                <X size={24} className="text-gray-400" />
+                <X size={24} className="text-gray-400 " />
               </button>
             </div>
           </div>
@@ -493,7 +493,7 @@ function FullCodeModal({ card, formatCode, onClose }) {
           <h2 className="text-2xl font-bold text-white">Complete Code</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-white/10 transition-all"
+            className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all duration-150"
           >
             <X size={24} className="text-gray-400" />
           </button>
