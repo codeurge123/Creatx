@@ -637,7 +637,7 @@ function App() {
       <div className="w-full min-h-screen text-white flex flex-col">
         <NavbarController />
 
-        <div className='sm:hidden m-5 bg-red-300/20 backdrop-blur-lg p-8 text-center rounded-md fixed top-96 z-50 '>
+        <div className='sm:hidden m-5 bg-red-300/20 backdrop-blur-lg p-8 text-center rounded-md fixed top-6  z-50 '>
           <p className="font-semibold m-10">Creatx. is designed for desktop/laptops screens only.</p>
         </div>
 
