@@ -13,7 +13,16 @@ export default function Home() {
 
             <div className="mt-12 flex items-center justify-center gap-4 animate-fadeUp" style={{ animationDelay: '360ms' }}>
               <button onClick={() => navigate('/library')} className="px-6 py-4 rounded-full bg-indigo-600 text-white font-semibold hover:opacity-95">Explore Animations</button>
-              <button className="px-6 py-4 rounded-full bg-transparent border border-white/10 text-white font-semibold hover:bg-white/5">Learn More</button>
+              <button
+                onClick={
+                  () => {
+                    window.scrollBy({
+                      top: 900, // scrolls down 80px
+                      behavior: "smooth",
+                    });
+                  }
+                }
+                className="px-6 py-4 rounded-full bg-transparent border border-white/10 text-white font-semibold hover:bg-white/5">Learn More</button>
             </div>
           </div>
 
@@ -112,6 +121,13 @@ export default function Home() {
                       <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-rose-600/10 text-rose-300">🎛️</span>
                       <span>Easy theming and timing tweaks.</span>
                     </li>
+                    <li className="flex items-start gap-3">
+                      <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-sky-600/10 text-sky-300">
+                        ✨
+                      </span>
+                      <span>Seamless AI integration for intelligent animation creation and control.</span>
+                    </li>
+
                   </ul>
                 </div>
               </div>

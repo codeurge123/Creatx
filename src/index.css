@@ -33,14 +33,14 @@ html, body, #root {
   /* animated full-viewport background gradient */
   background: linear-gradient(120deg, #071124 0%, #0b1220 30%, #0f1724 60%, #08101a 100%);
   background-size: 400% 400%;
-  animation: gradientShift 18s ease infinite;
+  animation: gradientShift 18s ease 1;
   background-attachment: fixed;
 }
 
 @keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% { background-position: 0% 10%; }
+  50% { background-position: 20% 10%; }
+  100% { background-position: 0% 10%; }
 }
 
 /* Hero and modal animations */
