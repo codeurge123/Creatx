@@ -637,6 +637,10 @@ function App() {
       <div className="w-full min-h-screen text-white flex flex-col">
         <NavbarController />
 
+        <div className='sm:hidden m-5 bg-red-300/20 backdrop-blur-lg p-8 text-center rounded-md fixed top-96 z-50 '>
+          <p className="font-semibold m-10">Creatx. is designed for desktop/laptops screens only.</p>
+        </div>
+
         <main className="site-main max-w-6xl mx-auto pt-28 pb-8 px-4 flex-1 w-full">
           <Routes>
             <Route path="/" element={<Home />} />
