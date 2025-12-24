@@ -5,6 +5,15 @@
   text-align: center;
 }
 
+iframe {
+  background: transparent;
+}
+
+iframe:focus {
+  outline: none;
+}
+
+
 .cardgrid-scroll {
   -webkit-overflow-scrolling: touch;
   /* smooth scrolling on iOS */

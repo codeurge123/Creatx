@@ -527,53 +527,57 @@ function FullCodeModal({ card, formatCode, onClose }) {
   );
 }
 
+
 function PreviewContent({ card }) {
   const previewRef = useRef(null);
+  const [renderKey, setRenderKey] = useState(0);
+
+  useEffect(() => {
+    // force remount on card change
+    setRenderKey((k) => k + 1);
+  }, [card.id]);
 
   useEffect(() => {
     if (!previewRef.current) return;
 
-    const container = previewRef.current;
-    const previewDiv = container.querySelector(".preview-content");
+    const previewDiv =
+      previewRef.current.querySelector(".preview-content");
 
     if (!previewDiv) return;
 
-    // Clear previous content
-    previewDiv.innerHTML = "";
-
-    // Inject HTML
-    previewDiv.innerHTML = card.html;
+    previewDiv.replaceChildren();
 
     // Inject CSS
-    let styleEl = document.createElement("style");
-    styleEl.innerHTML = card.css || "";
-    previewDiv.appendChild(styleEl);
-
-    // Run JS safely
-    if (card.js) {
-      requestAnimationFrame(() => {
-        try {
-          const scopedScript = new Function(
-            "container",
-            `
-  const document = container.ownerDocument;
-  const window = document.defaultView;
-  ${card.js}
-`
-          );
-
-          scopedScript(previewDiv);
-
-        } catch (err) {
-          console.error("Preview JS error:", err);
-        }
-      });
+    if (card.css) {
+      const styleEl = document.createElement("style");
+      styleEl.textContent = card.css;
+      previewDiv.appendChild(styleEl);
     }
 
-    return () => {
-      previewDiv.innerHTML = "";
-    };
-  }, [card]);
+    // Inject HTML (keyed wrapper)
+    const wrapper = document.createElement("div");
+    wrapper.setAttribute("data-key", renderKey);
+    wrapper.innerHTML = card.html || "";
+    previewDiv.appendChild(wrapper);
+
+    // 🔥 Force animation restart
+    void wrapper.offsetHeight;
+
+    // JS
+    if (card.js) {
+      const scopedScript = new Function(
+        "container",
+        `
+          const document = {
+            querySelector: (s) => container.querySelector(s),
+            querySelectorAll: (s) => container.querySelectorAll(s)
+          };
+          setTimeout(() => { ${card.js} }, 0);
+        `
+      );
+      scopedScript(wrapper);
+    }
+  }, [renderKey]);
 
   return (
     <div ref={previewRef} className="w-full">
@@ -581,6 +585,8 @@ function PreviewContent({ card }) {
     </div>
   );
 }
+
+
 
 function AlertNotify({ message, onClose }) {
   const [visible, setVisible] = useState(false);
