@@ -143,7 +143,7 @@ ${selectedCard.js ? `// JavaScript\n${selectedCard.js}` : ''}`;
           <div className="flex justify-center mt-8">
             <button
               onClick={() => setShowAll(true)}
-              className="px-8 py-3 relative top-[-49px]   bg-indigo-500 hover:from-indigo-600 rounded-full font-semibold shadow-lg transition-all hover:scale-105"
+              className="px-8 py-3 relative top-[-49px] duration-200 bg-indigo-500 hover:bg-indigo-600 rounded-full font-semibold shadow-lg transition-all hover:scale-105"
             >
               View All Animations ({filteredCards.length})
             </button>
@@ -207,8 +207,223 @@ function AnimationCard({ card, isFavorite, onToggleFavorite, onClick }) {
   );
 }
 
+function EditControlsModal({ card, onClose, onApply }) {
+  const [controls, setControls] = useState({
+    size: 100,
+    opacity: 100,
+    speed: 100
+  });
+  const [position, setPosition] = useState({ x: window.innerWidth / 2 - 200, y: 100 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const modalRef = useRef(null);
+
+  const handleMouseDown = (e) => {
+    if (e.target.closest('.modal-header')) {
+      setIsDragging(true);
+      setDragOffset({
+        x: e.clientX - position.x,
+        y: e.clientY - position.y
+      });
+    }
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (isDragging) {
+        setPosition({
+          x: e.clientX - dragOffset.x,
+          y: e.clientY - dragOffset.y
+        });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, dragOffset]);
+
+  const handleApply = () => {
+    onApply(controls);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[70] flex items-center justify-center">
+      <div
+        ref={modalRef}
+        style={{
+          position: 'fixed',
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+          cursor: isDragging ? 'grabbing' : 'default'
+        }}
+        className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl border border-white/10 w-96 shadow-2xl"
+      >
+        {/* Draggable Header */}
+        <div
+          className="modal-header flex items-center justify-between p-4 border-b border-white/10 cursor-grab active:cursor-grabbing"
+          onMouseDown={handleMouseDown}
+        >
+          <h3 className="text-lg font-semibold text-white">Edit Animation</h3>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all duration-150"
+          >
+            <X size={20} className="text-gray-400" />
+          </button>
+        </div>
+
+        {/* Controls */}
+        <div className="p-6 space-y-6">
+          {/* Size Control */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-gray-300">Size</label>
+              <span className="text-sm text-indigo-400">{controls.size}%</span>
+            </div>
+            <input
+              type="range"
+              min="50"
+              max="200"
+              value={controls.size}
+              onChange={(e) => setControls(prev => ({ ...prev, size: parseInt(e.target.value) }))}
+              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+            />
+          </div>
+
+          {/* Opacity Control */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-gray-300">Opacity</label>
+              <span className="text-sm text-indigo-400">{controls.opacity}%</span>
+            </div>
+            <input
+              type="range"
+              min="10"
+              max="100"
+              value={controls.opacity}
+              onChange={(e) => setControls(prev => ({ ...prev, opacity: parseInt(e.target.value) }))}
+              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+            />
+          </div>
+
+          {/* Speed Control */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-gray-300">Speed</label>
+              <span className="text-sm text-indigo-400">{controls.speed}%</span>
+            </div>
+            <input
+              type="range"
+              min="25"
+              max="400"
+              value={controls.speed}
+              onChange={(e) => setControls(prev => ({ ...prev, speed: parseInt(e.target.value) }))}
+              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-3 pt-4">
+            <button
+              onClick={onClose}
+              className="flex-1 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg font-medium transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleApply}
+              className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium transition-all"
+            >
+              Apply Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AnimationModal({ card, isFavorite, onToggleFavorite, onClose, onCopy, copied }) {
   const [showFullCode, setShowFullCode] = useState(false);
+  const [showEditControls, setShowEditControls] = useState(false);
+  const [modifiedCard, setModifiedCard] = useState(card);
+
+  const applyModifications = (controls) => {
+    const originalCss = card.css || '';
+    let modifiedCss = originalCss;
+
+    // Apply size transformation - wrap content with scale
+    const sizeScale = controls.size / 100;
+    const opacityValue = controls.opacity / 100;
+
+    // Add wrapper transformation styles at the beginning
+    const wrapperStyle = `
+    .animation-wrapper > div:last-child {
+      transform: scale(${sizeScale});
+      opacity: ${opacityValue};
+      transform-origin: center;
+    }
+  `;
+
+    // Handle animation speed
+    const speedMultiplier = 100 / controls.speed;
+
+    // Replace all animation-duration values
+    modifiedCss = modifiedCss.replace(
+      /animation-duration:\s*([\d.]+)s/gi,
+      (match, duration) => {
+        const newDuration = (parseFloat(duration) * speedMultiplier).toFixed(2);
+        return `animation-duration: ${newDuration}s`;
+      }
+    );
+
+    // Replace animation shorthand
+    modifiedCss = modifiedCss.replace(
+      /animation:\s*([a-zA-Z0-9_-]+)\s+([\d.]+)s/gi,
+      (match, name, duration) => {
+        const newDuration = (parseFloat(duration) * speedMultiplier).toFixed(2);
+        return `animation: ${name} ${newDuration}s`;
+      }
+    );
+
+    // Replace transition durations
+    modifiedCss = modifiedCss.replace(
+      /transition(?:-duration)?:\s*([a-zA-Z-]*\s*)?([\d.]+)s/gi,
+      (match, property, duration) => {
+        const newDuration = (parseFloat(duration) * speedMultiplier).toFixed(2);
+        return property
+          ? `transition: ${property}${newDuration}s`
+          : `transition-duration: ${newDuration}s`;
+      }
+    );
+
+    // Combine styles
+    const finalCss = wrapperStyle + '\n' + modifiedCss;
+
+    // Create new card object with unique reference
+    const newCard = {
+      ...card,
+      css: finalCss,
+      html: card.html,
+      js: card.js,
+      // Add timestamp to force update
+      _timestamp: Date.now()
+    };
+
+    setModifiedCard(newCard);
+    setShowEditControls(false);
+  };
 
   const formatCode = (code, type) => {
     if (!code) return '';
@@ -218,20 +433,15 @@ function AnimationModal({ card, isFavorite, onToggleFavorite, onClose, onCopy, c
       const indentSize = 2;
 
       return code
-        .replace(/>\s*</g, ">\n<") // break tags into lines
+        .replace(/>\s*</g, ">\n<")
         .split("\n")
         .map(line => {
           let trimmed = line.trim();
-
-          // closing tag → decrease indent first
           if (/^<\/.+>/.test(trimmed)) {
             indent--;
           }
-
           const formatted =
             " ".repeat(Math.max(indent, 0) * indentSize) + trimmed;
-
-          // opening tag that is NOT self-closing → increase indent
           if (
             /^<[^/!][^>]*>$/.test(trimmed) &&
             !trimmed.endsWith("/>") &&
@@ -239,7 +449,6 @@ function AnimationModal({ card, isFavorite, onToggleFavorite, onClose, onCopy, c
           ) {
             indent++;
           }
-
           return trimmed ? formatted : "";
         })
         .filter(Boolean)
@@ -253,24 +462,19 @@ function AnimationModal({ card, isFavorite, onToggleFavorite, onClose, onCopy, c
         .replace(/;/g, ";\n")
         .split("\n")
         .map(line => {
-          // indent inside blocks
           if (
             line.startsWith("}") ||
             line.startsWith("@keyframes")
           ) return line.trim();
-
           if (line.includes("{")) return line.trim();
-
           return line.trim() ? "  " + line.trim() : "";
         })
         .filter(Boolean)
         .join("\n");
     }
 
-
     if (type === 'js') {
       let indent = 0;
-
       return code
         .replace(/;/g, ";\n")
         .replace(/\{/g, " {\n")
@@ -278,11 +482,8 @@ function AnimationModal({ card, isFavorite, onToggleFavorite, onClose, onCopy, c
         .split("\n")
         .map(line => {
           if (line.includes("}")) indent -= 1;
-
           const formatted = "  ".repeat(Math.max(indent, 0)) + line.trim();
-
           if (line.includes("{")) indent += 1;
-
           return formatted.trim() ? formatted : "";
         })
         .filter(Boolean)
@@ -297,12 +498,10 @@ function AnimationModal({ card, isFavorite, onToggleFavorite, onClose, onCopy, c
     return () => document.body.classList.remove("modal-open");
   }, []);
 
-
-
   const totalLines =
-    (card.html ? formatCode(card.html, 'html').split('\n').length : 0) +
-    (card.css ? formatCode(card.css, 'css').split('\n').length : 0) +
-    (card.js ? formatCode(card.js, 'js').split('\n').length : 0);
+    (modifiedCard.html ? formatCode(modifiedCard.html, 'html').split('\n').length : 0) +
+    (modifiedCard.css ? formatCode(modifiedCard.css, 'css').split('\n').length : 0) +
+    (modifiedCard.js ? formatCode(modifiedCard.js, 'js').split('\n').length : 0);
 
   return (
     <>
@@ -311,8 +510,8 @@ function AnimationModal({ card, isFavorite, onToggleFavorite, onClose, onCopy, c
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-white/10">
             <div className="flex-1">
-              <h2 className="text-2xl font-bold text-white">{card.title}</h2>
-              <p className="text-gray-400 mt-1">{card.description}</p>
+              <h2 className="text-2xl font-bold text-white">{modifiedCard.title}</h2>
+              <p className="text-gray-400 mt-1">{modifiedCard.description}</p>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -356,25 +555,25 @@ function AnimationModal({ card, isFavorite, onToggleFavorite, onClose, onCopy, c
 
               {/* VS Code Style Editor */}
               <div className="space-y-4">
-                {card.html && (
+                {modifiedCard.html && (
                   <CodeBlock
-                    code={formatCode(card.html, 'html')}
+                    code={formatCode(modifiedCard.html, 'html')}
                     language="HTML"
                     maxLines={totalLines > 15 ? 5 : null}
                   />
                 )}
 
-                {card.css && (
+                {modifiedCard.css && (
                   <CodeBlock
-                    code={formatCode(card.css, 'css')}
+                    code={formatCode(modifiedCard.css, 'css')}
                     language="CSS"
                     maxLines={totalLines > 15 ? 7 : null}
                   />
                 )}
 
-                {card.js && (
+                {modifiedCard.js && (
                   <CodeBlock
-                    code={formatCode(card.js, 'js')}
+                    code={formatCode(modifiedCard.js, 'js')}
                     language="JavaScript"
                     maxLines={totalLines > 15 ? 5 : null}
                   />
@@ -399,7 +598,10 @@ function AnimationModal({ card, isFavorite, onToggleFavorite, onClose, onCopy, c
                     </>
                   )}
                 </button>
-                <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg font-medium transition-all">
+                <button
+                  onClick={() => setShowEditControls(true)}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg font-medium transition-all"
+                >
                   <Edit size={18} />
                   Edit
                 </button>
@@ -410,17 +612,29 @@ function AnimationModal({ card, isFavorite, onToggleFavorite, onClose, onCopy, c
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-cyan-300">Preview</h3>
               <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border border-white/10 p-8 min-h-[500px] flex items-center justify-center shadow-xl sticky top-0">
-                <PreviewContent card={card} />
+                <PreviewContent
+                  key={modifiedCard._timestamp || modifiedCard.id}
+                  card={modifiedCard}
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Edit Controls Modal */}
+      {showEditControls && (
+        <EditControlsModal
+          card={card}
+          onClose={() => setShowEditControls(false)}
+          onApply={applyModifications}
+        />
+      )}
+
       {/* Full Code Modal */}
       {showFullCode && (
         <FullCodeModal
-          card={card}
+          card={modifiedCard}
           formatCode={formatCode}
           onClose={() => setShowFullCode(false)}
         />
@@ -530,59 +744,104 @@ function FullCodeModal({ card, formatCode, onClose }) {
 
 function PreviewContent({ card }) {
   const previewRef = useRef(null);
-  const [renderKey, setRenderKey] = useState(0);
+  const [key, setKey] = useState(0);
 
   useEffect(() => {
-    // force remount on card change
-    setRenderKey((k) => k + 1);
-  }, [card.id]);
+    // Force complete remount when card changes
+    setKey(prev => prev + 1);
+  }, [card.id, card.css, card.html, card.js]);
 
   useEffect(() => {
     if (!previewRef.current) return;
 
-    const previewDiv =
-      previewRef.current.querySelector(".preview-content");
+    const container = previewRef.current;
 
-    if (!previewDiv) return;
+    // Clear everything first
+    container.innerHTML = '';
 
-    previewDiv.replaceChildren();
+    // Create a new wrapper div
+    const wrapper = document.createElement('div');
+    wrapper.className = 'animation-wrapper';
+    wrapper.style.width = '100%';
+    wrapper.style.height = '100%';
+    wrapper.style.display = 'flex';
+    wrapper.style.alignItems = 'center';
+    wrapper.style.justifyContent = 'center';
 
-    // Inject CSS
+    // Inject CSS with unique scoping
     if (card.css) {
-      const styleEl = document.createElement("style");
-      styleEl.textContent = card.css;
-      previewDiv.appendChild(styleEl);
+      const styleEl = document.createElement('style');
+      styleEl.setAttribute('data-animation-style', key);
+
+      // Scope CSS to this specific wrapper
+      let scopedCss = card.css;
+
+      // Remove any existing .preview-content wrappers from CSS
+      scopedCss = scopedCss.replace(/\.preview-content\s*>\s*div\s*\{[^}]*\}/g, '');
+
+      styleEl.textContent = scopedCss;
+      wrapper.appendChild(styleEl);
     }
 
-    // Inject HTML (keyed wrapper)
-    const wrapper = document.createElement("div");
-    wrapper.setAttribute("data-key", renderKey);
-    wrapper.innerHTML = card.html || "";
-    previewDiv.appendChild(wrapper);
-
-    // 🔥 Force animation restart
-    void wrapper.offsetHeight;
-
-    // JS
-    if (card.js) {
-      const scopedScript = new Function(
-        "container",
-        `
-          const document = {
-            querySelector: (s) => container.querySelector(s),
-            querySelectorAll: (s) => container.querySelectorAll(s)
-          };
-          setTimeout(() => { ${card.js} }, 0);
-        `
-      );
-      scopedScript(wrapper);
+    // Inject HTML
+    if (card.html) {
+      const contentDiv = document.createElement('div');
+      contentDiv.innerHTML = card.html;
+      wrapper.appendChild(contentDiv);
     }
-  }, [renderKey]);
+
+    // Append wrapper to container
+    container.appendChild(wrapper);
+
+    // CRITICAL: Force DOM reflow to restart animations
+    void wrapper.offsetWidth;
+
+    // Trigger animation restart by toggling display
+    wrapper.style.display = 'none';
+    requestAnimationFrame(() => {
+      wrapper.style.display = 'flex';
+
+      // Execute JavaScript after animations are ready
+      if (card.js) {
+        setTimeout(() => {
+          try {
+            const scopedScript = new Function(
+              'container',
+              `
+                const document = {
+                  querySelector: (s) => container.querySelector(s),
+                  querySelectorAll: (s) => container.querySelectorAll(s),
+                  getElementById: (id) => container.querySelector('#' + id)
+                };
+                ${card.js}
+              `
+            );
+            scopedScript(wrapper);
+          } catch (error) {
+            console.error('JavaScript execution error:', error);
+          }
+        }, 50);
+      }
+    });
+
+    // Cleanup function
+    return () => {
+      container.innerHTML = '';
+    };
+  }, [key, card]);
 
   return (
-    <div ref={previewRef} className="w-full">
-      <div className="preview-content"></div>
-    </div>
+    <div
+      ref={previewRef}
+      key={key}
+      className="preview-content w-full h-full"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '400px'
+      }}
+    />
   );
 }
 

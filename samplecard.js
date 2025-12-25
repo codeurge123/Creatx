@@ -5,7 +5,8 @@ export const sampleCards = [
     description: "A simple pulsing loader using CSS animation",
     language: "HTML / CSS",
     html: `<div class="pulse-wrap"><div class="dot"></div></div>`,
-    css: `.pulse-wrap{display:flex;align-items:center;justify-content:center;height:180px;}.dot{width:24px;height:24px;border-radius:50%;background:#06b6d4;animation:pulse 1s infinite ease-in-out;}@keyframes pulse{0%{transform:scale(1);opacity:1;}70%{transform:scale(1.8);opacity:0;}100%{opacity:0;}}`,
+    css: `.pulse-wrap{display:flex;align-items:center;justify-content:center;height:180px;}.dot{width:24px;height:24px;border-radius:50%;background:#06b6d4;animation:pulse 1s infinite ease-in-out;}@keyframes pulse{0%{transform:scale(1);opacity:1;}70%{transform:scale(1.8);opacity:0;}100%{transform: scale(1);
+opacity:0;}}`,
     js: "",
     category: "css",
   },
