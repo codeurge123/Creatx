@@ -146,13 +146,13 @@ opacity:0;}}`,
     description: "Bouncing wave bars animation",
     language: "HTML / CSS",
     html: `<div class="wave"><span></span><span></span><span></span><span></span><span></span></div>`,
-    css: `.wave{display:flex;gap:6px;align-items:end;height:120px;justify-content:center;}
+    css: `.wave{display:flex;gap:6px;align-items:flex-end;height:120px;justify-content:center;}
 .wave span{width:8px;height:20px;background:#3b82f6;border-radius:4px;animation:wave 1s infinite ease-in-out}
 .wave span:nth-child(2){animation-delay:.1s;}
 .wave span:nth-child(3){animation-delay:.2s;}
 .wave span:nth-child(4){animation-delay:.3s;}
 .wave span:nth-child(5){animation-delay:.4s;}
-@keyframes wave{0%,100%{height:20px;}50%{height:60px;}}`,
+@keyframes wave{0%,100%{height:20px;}50%{height:120px;}}`,
     js: "",
     category: "css",
   },
@@ -261,8 +261,8 @@ document.querySelector('.spark-btn').addEventListener('mousemove',e=>{
     title: "Slide-in Panel",
     description: "Side panel slides in with JS toggle",
     language: "HTML / CSS / JS",
-    html: `<button class="open-panel">Open</button><div class="panel">Hello!</div>`,
-    css: `.panel{position:fixed;right:-200px;top:0;width:200px;height:100vh;
+    html: `<button class="open-panel">≡</button><div class="panel">Welcome To Creatx</div>`,
+    css: `.panel{position:fixed;right:-200px;top:0;width:100px;height:100vh;
 background:#1f2937;color:white;display:flex;align-items:center;
 justify-content:center;transition:.3s;}
 .panel.show{right:0;}
@@ -305,7 +305,7 @@ animation:floatUp 1.8s forwards;}
   background:linear-gradient(135deg,#06b6d4,#3b82f6);
   color:white;
   font-weight:600;
-  animation:fadeIn .6s ease-out forwards;
+  animation:fadeIn 4s ease-out forwards infinite;
 }
 @keyframes fadeIn{
   from{opacity:0;transform:translateY(20px);}
@@ -367,7 +367,7 @@ card.addEventListener('mouseleave',()=>{
   color:white;
   border-radius:8px;
   opacity:0;
-  animation:slideUp .4s forwards;
+  animation:slideUp 4s forwards infinite;
   animation-delay:var(--d);
 }
 @keyframes slideUp{
@@ -401,6 +401,206 @@ card.addEventListener('mouseleave',()=>{
 .glass-card:hover{
   transform:scale(1.06);
 }`,
+    js: "",
+    category: "css",
+  },
+  {
+    id: "liquid-button",
+    title: "Liquid Fill Button",
+    description: "Button fills with liquid animation on hover",
+    language: "HTML / CSS",
+    html: `<button class="liquid-btn"><span>Hover</span></button>`,
+    css: `.liquid-btn{position:relative;padding:12px 28px;border:2px solid #06b6d4;background:transparent;color:#06b6d4;border-radius:50px;font-weight:600;overflow:hidden;transition:color .4s;}.liquid-btn::before{content:"";position:absolute;bottom:0;left:0;width:100%;height:0;background:#06b6d4;transition:height .4s cubic-bezier(.4,0,.2,1);z-index:-1;}.liquid-btn:hover{color:white;}.liquid-btn:hover::before{height:100%;}.liquid-btn span{position:relative;z-index:1;}`,
+    js: "",
+    category: "css",
+  },
+  {
+    id: "parallax-cards",
+    title: "Parallax Layer Cards",
+    description: "Multi-layer parallax effect on mouse move",
+    language: "HTML / CSS / JS",
+    html: `<div class="parallax-wrap"><div class="layer layer-1"></div><div class="layer layer-2"></div><div class="layer layer-3"></div></div>`,
+    css: `.parallax-wrap{position:relative;width:280px;height:200px;overflow:hidden;border-radius:16px;}.layer{position:absolute;width:100%;height:100%;transition:transform .2s ease-out;}.layer-1{background:linear-gradient(135deg,#667eea,#764ba2);}.layer-2{background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.3),transparent);}.layer-3{background:radial-gradient(circle at 70% 70%,rgba(6,182,212,.4),transparent);}`,
+    js: `const wrap=document.querySelector('.parallax-wrap');const layers=document.querySelectorAll('.layer');wrap.addEventListener('mousemove',e=>{const rect=wrap.getBoundingClientRect();const x=(e.clientX-rect.left)/rect.width-.5;const y=(e.clientY-rect.top)/rect.height-.5;layers.forEach((l,i)=>{const depth=(i+1)*10;l.style.transform=\`translate(\${x*depth}px,\${y*depth}px)\`;});});wrap.addEventListener('mouseleave',()=>{layers.forEach(l=>l.style.transform='translate(0,0)');});`,
+    category: "js",
+  },
+  {
+    id: "magnetic-button",
+    title: "Magnetic Button",
+    description: "Button follows cursor when nearby",
+    language: "HTML / CSS / JS",
+    html: `<div class="mag-wrap"><button class="mag-btn">Magnetic</button></div>`,
+    css: `.mag-wrap{display:flex;align-items:center;justify-content:center;height:200px;}.mag-btn{padding:12px 24px;background:linear-gradient(135deg,#f093fb,#f5576c);border:none;border-radius:10px;color:white;font-weight:700;transition:transform .15s ease;}`,
+    js: `const btn=document.querySelector('.mag-btn');const wrap=document.querySelector('.mag-wrap');wrap.addEventListener('mousemove',e=>{const rect=btn.getBoundingClientRect();const x=e.clientX-(rect.left+rect.width/2);const y=e.clientY-(rect.top+rect.height/2);const dist=Math.sqrt(x*x+y*y);if(dist<120){const pull=Math.max(0,1-dist/120);btn.style.transform=\`translate(\${x*pull*.4}px,\${y*pull*.4}px)\`;}else{btn.style.transform='translate(0,0)';}});wrap.addEventListener('mouseleave',()=>{btn.style.transform='translate(0,0)';});`,
+    category: "js",
+  },
+  {
+    id: "reveal-text",
+    title: "Text Scramble Reveal",
+    description: "Matrix-style text scramble looping effect",
+    language: "HTML / CSS / JS",
+    html: `<div class="scramble">CREATX</div>`,
+    css: `.scramble{font-size:2.4rem;font-weight:800;font-family:monospace;color:#10b981;letter-spacing:4px;}`,
+    js: `const chars='!@#$%^&*()_+-=[]{}|;:,.<>?';const text='CREATX';const el=document.querySelector('.scramble');function scramble(){let frame=0;const interval=setInterval(()=>{if(frame>30){el.textContent=text;clearInterval(interval);setTimeout(scramble,2000);return;}let str='';for(let i=0;i<text.length;i++){if(frame/30>i/text.length)str+=text[i];else str+=chars[Math.floor(Math.random()*chars.length)];}el.textContent=str;frame++;},60);}scramble();`,
+    category: "js",
+  },
+  {
+    id: "aurora-bg",
+    title: "Aurora Background",
+    description: "Animated aurora borealis gradient",
+    language: "HTML / CSS",
+    html: `<div class="aurora"></div>`,
+    css: `.aurora{width:100%;height:200px;background:linear-gradient(45deg,#667eea,#764ba2,#f093fb,#4facfe);background-size:400% 400%;animation:aurora 8s ease infinite;border-radius:12px;}@keyframes aurora{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}`,
+    js: "",
+    category: "css",
+  },
+  {
+    id: "counter-up",
+    title: "Count Up Animation",
+    description: "Animated number counter looping infinitely",
+    language: "HTML / CSS / JS",
+    html: `<div class="counter" data-target="1247">0</div>`,
+    css: `.counter{font-size:3rem;font-weight:800;color:#3b82f6;text-align:center;}`,
+    js: `const counter=document.querySelector('.counter');const target=+counter.getAttribute('data-target');const increment=target/100;let current=0;const update=()=>{current+=increment;if(current<target){counter.textContent=Math.ceil(current);requestAnimationFrame(update);}else{counter.textContent=target;setTimeout(()=>{current=0;counter.textContent='0';update();},1500);}};update();`,
+    category: "js",
+  },
+  {
+    id: "breathing-circle",
+    title: "Breathing Circle",
+    description: "Calm breathing meditation animation",
+    language: "HTML / CSS",
+    html: `<div class="breathe"></div>`,
+    css: `.breathe{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#06b6d4,#3b82f6);animation:breathe 4s ease-in-out infinite;}@keyframes breathe{0%,100%{transform:scale(1);opacity:.6;}50%{transform:scale(1.3);opacity:1;}}`,
+    js: "",
+    category: "css",
+  },
+  {
+    id: "ink-spread",
+    title: "Ink Spread Effect",
+    description: "Ink spreading transition on click",
+    language: "HTML / CSS / JS",
+    html: `<div class="ink-wrap"><button class="ink-trigger">Spread</button><div class="ink-overlay"></div></div>`,
+    css: `.ink-wrap{position:relative;display:flex;align-items:center;justify-content:center;height:200px;}.ink-trigger{padding:10px 20px;background:#111827;color:white;border:none;border-radius:8px;font-weight:600;z-index:2;}.ink-overlay{position:absolute;width:0;height:0;border-radius:50%;background:#06b6d4;transform:translate(-50%,-50%);pointer-events:none;transition:all .8s cubic-bezier(.4,0,.2,1);}`,
+    js: `document.querySelector('.ink-trigger').addEventListener('click',function(e){const overlay=document.querySelector('.ink-overlay');const rect=this.getBoundingClientRect();overlay.style.left=(rect.left+rect.width/2)+'px';overlay.style.top=(rect.top+rect.height/2)+'px';overlay.style.width='0';overlay.style.height='0';setTimeout(()=>{overlay.style.width='600px';overlay.style.height='600px';},10);setTimeout(()=>{overlay.style.width='0';overlay.style.height='0';},1000);});`,
+    category: "js",
+  },
+  {
+    id: "split-flap",
+    title: "Split Flap Display",
+    description: "Retro split-flap board animation looping",
+    language: "HTML / CSS / JS",
+    html: `<div class="flap-board"><div class="flap">0</div></div>`,
+    css: `.flap-board{display:flex;justify-content:center;height:160px;align-items:center;}.flap{width:60px;height:80px;background:#111827;color:#10b981;font-size:2.4rem;font-weight:800;display:flex;align-items:center;justify-content:center;border-radius:8px;position:relative;overflow:hidden;transition:transform .15s;}.flap::before{content:"";position:absolute;top:50%;left:0;right:0;height:2px;background:#000;z-index:1;}`,
+    js: `const flap=document.querySelector('.flap');let num=0;setInterval(()=>{flap.style.transform='rotateX(90deg)';setTimeout(()=>{num=(num+1)%10;flap.textContent=num;flap.style.transform='rotateX(0)';},150);},2000);`,
+    category: "js",
+  },
+  {
+    id: "gradient-border",
+    title: "Animated Gradient Border",
+    description: "Rotating gradient border effect",
+    language: "HTML / CSS",
+    html: `<div class="grad-border"><div class="grad-content">Premium</div></div>`,
+    css: `.grad-border{padding:3px;background:linear-gradient(45deg,#f093fb,#f5576c,#4facfe,#667eea);background-size:300% 300%;animation:gradRotate 3s linear infinite;border-radius:12px;display:inline-block;}.grad-content{background:#0f172a;color:white;padding:12px 24px;border-radius:10px;font-weight:700;}@keyframes gradRotate{to{background-position:300% 300%;}}`,
+    js: "",
+    category: "css",
+  },
+  {
+    id: "bounce-in",
+    title: "Bounce In Elements",
+    description: "Elements bounce in sequentially and repeat",
+    language: "HTML / CSS",
+    html: `<div class="bounce-wrap"><div class="box" style="--i:0"></div><div class="box" style="--i:1"></div><div class="box" style="--i:2"></div><div class="box" style="--i:3"></div></div>`,
+    css: `.bounce-wrap{display:flex;gap:16px;justify-content:center;height:180px;align-items:center;}.box{width:60px;height:60px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:10px;opacity:0;animation:bounceIn 4s cubic-bezier(.68,-.55,.265,1.55) infinite;animation-delay:calc(var(--i)*.10s);}@keyframes bounceIn{0%,80%{opacity:0;transform:scale(0)translateY(-40px);}20%,60%{opacity:1;transform:scale(1)translateY(0);}}`,
+    js: "",
+    category: "css",
+  },
+  {
+    id: "slide-menu",
+    title: "Sliding Menu Items",
+    description: "Menu slides in with stagger repeatedly",
+    language: "HTML / CSS",
+    html: `<ul class="slide-menu"><li style="--i:0">Home</li><li style="--i:1">About</li><li style="--i:2">Services</li><li style="--i:3">Contact</li></ul>`,
+    css: `.slide-menu{list-style:none;padding:0;}.slide-menu li{padding:12px 20px;background:#111827;color:white;margin-bottom:8px;border-radius:8px;animation:slideIn 5s ease-in-out infinite;animation-delay:calc(var(--i)*.1s);}@keyframes slideIn{0%,80%{transform:translateX(-100%);opacity:0;}15%,65%{transform:translateX(0);opacity:1;}}`,
+    js: "",
+    category: "css",
+  },
+  {
+    id: "noise-text",
+    title: "Glitch Noise Text",
+    description: "Glitchy text effect with color shift",
+    language: "HTML / CSS",
+    html: `<div class="glitch" data-text="GLITCH">GLITCH</div>`,
+    css: `.glitch{position:relative;font-size:2.4rem;font-weight:800;color:#fff;}.glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;}.glitch::before{animation:glitch1 .4s infinite;color:#0ff;}.glitch::after{animation:glitch2 .4s infinite;color:#f0f;}@keyframes glitch1{0%{clip-path:inset(40% 0 60% 0);transform:translate(-2px,2px);}100%{clip-path:inset(20% 0 80% 0);transform:translate(2px,-2px);}}@keyframes glitch2{0%{clip-path:inset(60% 0 40% 0);transform:translate(2px,-2px);}100%{clip-path:inset(80% 0 20% 0);transform:translate(-2px,2px);}}`,
+    js: "",
+    category: "css",
+  },
+  {
+    id: "progress-ring",
+    title: "Circular Progress Ring",
+    description: "Animated SVG circular progress looping",
+    language: "HTML / CSS / JS",
+    html: `<svg class="progress-ring" width="120" height="120"><circle class="ring-bg" cx="60" cy="60" r="52" /><circle class="ring-progress" cx="60" cy="60" r="52" /></svg>`,
+    css: `.progress-ring{transform:rotate(-90deg);}.ring-bg{fill:none;stroke:#e5e7eb;stroke-width:8;}.ring-progress{fill:none;stroke:#06b6d4;stroke-width:8;stroke-linecap:round;stroke-dasharray:327;stroke-dashoffset:327;animation:progress 2s ease-in-out infinite;}@keyframes progress{0%,100%{stroke-dashoffset:327;}50%{stroke-dashoffset:82;}}`,
+    js: "",
+    category: "css",
+  },
+  {
+    id: "hover-lift",
+    title: "Hover Lift Card",
+    description: "Card lifts with shadow on hover",
+    language: "HTML / CSS",
+    html: `<div class="lift-card">Hover Card</div>`,
+    css: `.lift-card{width:200px;height:120px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-radius:16px;display:flex;align-items:center;justify-content:center;font-weight:700;transition:transform .3s,box-shadow .3s;box-shadow:0 4px 6px rgba(0,0,0,.1);}.lift-card:hover{transform:translateY(-12px);box-shadow:0 20px 40px rgba(102,126,234,.4);}`,
+    js: "",
+    category: "css",
+  },
+  {
+    id: "dot-grid",
+    title: "Animated Dot Grid",
+    description: "Pulsing dot grid pattern",
+    language: "HTML / CSS",
+    html: `<div class="dot-grid"></div>`,
+    css: `.dot-grid{width:280px;height:160px;background-image:radial-gradient(circle,#06b6d4 2px,transparent 2px);background-size:24px 24px;animation:dotPulse 2s ease-in-out infinite;}@keyframes dotPulse{0%,100%{opacity:.4;}50%{opacity:1;}}`,
+    js: "",
+    category: "css",
+  },
+  {
+    id: "shake-alert",
+    title: "Shake Alert",
+    description: "Alert box shakes to grab attention",
+    language: "HTML / CSS / JS",
+    html: `<button class="shake-btn">Show Alert</button><div class="alert hidden">⚠️ Alert!</div>`,
+    css: `.alert{padding:12px 20px;background:#ef4444;color:white;border-radius:8px;font-weight:600;margin-top:12px;}.alert.hidden{display:none;}.alert.shake{animation:shake .4s;}@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-10px);}75%{transform:translateX(10px);}}`,
+    js: `document.querySelector('.shake-btn').onclick=()=>{const alert=document.querySelector('.alert');alert.classList.remove('hidden');alert.classList.add('shake');setTimeout(()=>alert.classList.remove('shake'),400);};`,
+    category: "js",
+  },
+  {
+    id: "text-wave",
+    title: "Wave Text Animation",
+    description: "Letters wave up and down",
+    language: "HTML / CSS",
+    html: `<div class="wave-text"><span style="--i:0">W</span><span style="--i:1">A</span><span style="--i:2">V</span><span style="--i:3">E</span></div>`,
+    css: `.wave-text{display:flex;gap:4px;font-size:2rem;font-weight:800;justify-content:center;}.wave-text span{display:inline-block;animation:wave 1s ease-in-out infinite;animation-delay:calc(var(--i)*.1s);}@keyframes wave{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}`,
+    js: "",
+    category: "css",
+  },
+  {
+    id: "toggle-switch",
+    title: "Animated Toggle Switch",
+    description: "Smooth toggle with transition",
+    language: "HTML / CSS / JS",
+    html: `<label class="toggle"><input type="checkbox" class="toggle-input"><span class="toggle-slider"></span></label>`,
+    css: `.toggle{position:relative;display:inline-block;width:54px;height:28px;}.toggle-input{opacity:0;width:0;height:0;}.toggle-slider{position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:28px;transition:.3s;}.toggle-slider::before{content:"";position:absolute;height:20px;width:20px;left:4px;bottom:4px;background:white;border-radius:50%;transition:.3s;}.toggle-input:checked+.toggle-slider{background:#06b6d4;}.toggle-input:checked+.toggle-slider::before{transform:translateX(26px);}`,
+    js: "",
+    category: "css",
+  },
+  {
+    id: "zoom-image",
+    title: "Image Zoom Hover",
+    description: "Image zooms smoothly on hover",
+    language: "HTML / CSS",
+    html: `<div class="zoom-wrap"><div class="zoom-img"></div></div>`,
+    css: `.zoom-wrap{width:240px;height:160px;overflow:hidden;border-radius:12px;}.zoom-img{width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);transition:transform .4s ease;}.zoom-wrap:hover .zoom-img{transform:scale(1.15);}`,
     js: "",
     category: "css",
   },
