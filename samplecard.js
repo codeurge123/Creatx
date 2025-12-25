@@ -137,12 +137,12 @@ opacity:0;}}`,
     language: "HTML / CSS",
     html: `<div class="wave"><span></span><span></span><span></span><span></span><span></span></div>`,
     css: `.wave{display:flex;gap:6px;align-items:flex-end;height:120px;justify-content:center;}
-.wave span{width:8px;height:20px;background:#3b82f6;border-radius:4px;animation:wave 1s infinite ease-in-out}
+.wave span{width:8px;height:8px;background:#3b82f6;border-radius:100%;animation:wave .8s ease-in infinite}
 .wave span:nth-child(2){animation-delay:.1s;}
-.wave span:nth-child(3){animation-delay:.2s;}
-.wave span:nth-child(4){animation-delay:.3s;}
-.wave span:nth-child(5){animation-delay:.4s;}
-@keyframes wave{0%,100%{height:20px;}50%{height:120px;}}`,
+.wave span:nth-child(3){animation-delay: .2s;}
+.wave span:nth-child(4){animation-delay: .3s;}
+.wave span:nth-child(5){animation-delay: .4s;}
+@keyframes wave{0%,100%{height:20px;}50%{height:60px;}}`,
     js: "",
     category: "css",
   },
