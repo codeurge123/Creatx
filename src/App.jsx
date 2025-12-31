@@ -905,7 +905,7 @@ function App() {
         <div className="sm:hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md">
           <div className="bg-red-300/20 p-8 mx-6 text-center rounded-lg shadow-lg">
             <p className="font-semibold text-lg text-white">
-              Creatx is designed for desktop/laptop screens only.
+              Creatx. is designed for desktop/laptop screens only.
             </p>
           </div>
         </div>
