@@ -26,6 +26,7 @@ import "prismjs/components/prism-css";
 import "prismjs/components/prism-javascript";
 
 import { sampleCards } from "../samplecard.js";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 
 function FooterController() {
   const location = useLocation();
@@ -900,6 +901,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="w-full min-h-screen text-white flex flex-col">
+        <ScrollToTop />
         <NavbarController />
 
         <div className="sm:hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md">
