@@ -606,7 +606,14 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
             </div>
             <div className="border dark:border-white/6 rounded dark:bg-black" style={{ height: 635 }}>
               {previewUrl ? (
-                <iframe title="preview" src={previewUrl} className="w-full h-full" sandbox="allow-scripts allow-same-origin" />
+                <iframe title="preview" src={previewUrl} className="w-full h-full" sandbox="allow-scripts allow-same-origin"
+                  onLoad={(e) => {
+                    const iframe = e.target;
+                    const doc = iframe.contentDocument;
+                    if (doc) {
+                      doc.body.style.background = "#f3e9dc";
+                    }
+                  }} />
               ) : (
                 <div className="p-4 text-white/60">Preview not available</div>
               )}
