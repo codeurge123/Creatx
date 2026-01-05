@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import CodeEditor from "../components/CodeEditor";
+import { Rnd } from "react-rnd";
+
 
 const LOCAL_KEY = "creatx_user_snippets";
 const SHARED_KEY = "creatx_shared_snippets";
@@ -34,7 +37,7 @@ function pushCreateLog(ts) {
     const arr = readCreateLog();
     arr.unshift(ts);
     localStorage.setItem(CREATE_LOG, JSON.stringify(arr));
-  } catch {}
+  } catch { }
 }
 
 export default function Create() {
@@ -43,6 +46,8 @@ export default function Create() {
   const [css, setCss] = useState(
     ".demo{width:60px;height:60px;background:#06b6d4;border-radius:8px;animation:float 3s infinite}"
   );
+  const [editorFullscreen, setEditorFullscreen] = useState(false);
+
   const [js, setJs] = useState("");
   const [share, setShare] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -51,6 +56,13 @@ export default function Create() {
 
   // terminal active tab: "html" | "css" | "js"
   const [activeTab, setActiveTab] = useState("html");
+
+  const DEFAULT_EDITOR_SIZE = {
+    width: 1000,
+    height: 560, // header + editor
+  };
+
+
 
   // AI modal states
   const [aiOpen, setAiOpen] = useState(false);
@@ -78,6 +90,14 @@ export default function Create() {
       document.body.style.overflow = '';
     };
   }, [fullscreenPreview]);
+
+  useEffect(() => {
+    document.body.style.overflow = editorFullscreen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [editorFullscreen]);
+
 
   // build preview blob
   useEffect(() => {
@@ -188,7 +208,7 @@ export default function Create() {
   function formatJs(src) {
     try {
       const withLines = src.replace(/;\s*/g, ";\n").replace(/\{\s*/g, "{\n").replace(/\}\s*/g, "}\n");
-      const lines = withLines.split("\n").map(l => l.replace(/\s+$/,''));
+      const lines = withLines.split("\n").map(l => l.replace(/\s+$/, ''));
       let depth = 0;
       const out = lines.map((l) => {
         const t = l.trim();
@@ -321,7 +341,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
       setHtml((prev) => prev + `\n<!-- AI RAW START (HTML) -->\n${aiResult}\n<!-- AI RAW END -->`);
     }
   }
-  
+
   function applyCss() {
     if (parsedResult && parsedResult.css) {
       setCss(parsedResult.css);
@@ -329,7 +349,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
       setCss((prev) => prev + `\n/* AI RAW START (CSS) */\n${aiResult}\n/* AI RAW END */`);
     }
   }
-  
+
   function applyJs() {
     if (parsedResult && parsedResult.js) {
       setJs(parsedResult.js);
@@ -375,7 +395,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
   return (
     <section className="min-h-[70vh]">
       <div className="max-w-6xl mx-auto bg-white/3 p-6 rounded-lg">
-        <div className="flex border shadow-sm shadow-gray-800 border-gray-800 p-4 rounded-xl justify-between mb-4">
+        <div className="flex border shadow-sm shadow-gray-800 border-gray-800 p-6 rounded-xl justify-between mb-8">
           <div className="">
             <h2 className="text-xl text-left font-semibold">Create Animation</h2>
             <div className="text-sm text-white/70">
@@ -399,13 +419,33 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
               />
             </div>
 
-            <div className="bg-black/80 rounded-lg overflow-hidden border border-white/6">
-              <div className="flex items-center gap-2 px-3 py-2 bg-black/90 border-b border-white/6">
+            <div className="bg-neutral-900 rounded-lg overflow-hidden border border-white/10">
+              <div className="flex items-center gap-2 px-3 py-2 bg-neutral-900 border-b border-white/10">
                 <div className="flex items-center gap-1">
-                  <span className="w-3 h-3 rounded-full bg-red-500" />
-                  <span className="w-3 h-3 rounded-full bg-yellow-400" />
-                  <span className="w-3 h-3 rounded-full bg-green-400" />
+
+                  {/* Close (optional) */}
+                  <span
+                    className="w-3 h-3 rounded-full bg-red-500 cursor-pointer hover:opacity-80"
+                    title="Close editor"
+                    onClick={() => {
+                      /* optional: close editor / reset */
+                    }}
+                  />
+
+                  {/* Minimize (future use) */}
+                  <span
+                    className="w-3 h-3 rounded-full bg-yellow-400 cursor-default opacity-70"
+                    title="Minimize (coming soon)"
+                  />
+
+                  {/* ✅ Fullscreen */}
+                  <span
+                    className="w-3 h-3 rounded-full bg-green-400 cursor-pointer hover:scale-110 transition-transform"
+                    title="Open editor in fullscreen"
+                    onClick={() => setEditorFullscreen(true)}
+                  />
                 </div>
+
 
                 <div className="ml-3 text-xs text-white/70 flex gap-2">
                   <button
@@ -432,7 +472,13 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                 </div>
 
                 <div className="ml-auto flex items-center gap-2">
-                  <button onClick={formatActive} title="Format current editor" className="px-3 py-1 rounded bg-gray-800 text-xs">Format</button>
+                  <button
+                    onClick={formatActive}
+                    title="Format current editor"
+                    className="px-3 py-1 rounded bg-gray-800 text-xs"
+                  >
+                    Format
+                  </button>
                   <button
                     onClick={() => {
                       setAiOpen(true);
@@ -441,54 +487,63 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                       setAiError("");
                       setParsedResult(null);
                     }}
-                    className="px-3 py-1 rounded text-white text-sm bg-gradient-to-br from-[#7C3AED] to-[#3B82F6] hover:from-[#9333EA] hover:to-[#2563EB] transition-colors duration-150"
-                    title="Open AI Assistant"
+                    className="px-3 py-1 rounded text-white text-sm bg-gradient-to-br from-[#7C3AED] to-[#3B82F6]"
                   >
                     AI Assist
                   </button>
                 </div>
+
               </div>
 
               <div className="p-3">
                 <div
-                  className="bg-black p-2 rounded text-[13px] font-mono text-white/80"
+                  className="bg-neutral-900 p-2 rounded text-[13px] font-mono text-white/80"
                   style={{ minHeight: "320px" }}
                 >
                   <div className="text-[12px] text-white/60 mb-2">user@creatx:~$ editing — showing {activeTab.toUpperCase()}</div>
 
                   {activeTab === "html" && (
-                    <div className="mb-2">
+                    <div className="mb-2 " style={{ height: 460 }}>
                       <div className="text-md text-left text-white/60">HTML</div>
-                      <textarea
-                        value={html}
-                        onChange={(e) => setHtml(e.target.value)}
-                        rows={21}
-                        className="w-full mt-1 p-2 rounded bg-black text-white font-mono"
-                      />
+                      {activeTab === "html" && (
+                        <CodeEditor
+                          language="html"
+                          value={html}
+                          onChange={setHtml}
+                          height="420px"
+                        />
+                      )}
+
                     </div>
                   )}
 
                   {activeTab === "css" && (
                     <div className="mb-2">
                       <div className="text-md text-left text-white/60">CSS</div>
-                      <textarea
-                        value={css}
-                        onChange={(e) => setCss(e.target.value)}
-                        rows={21}
-                        className="w-full mt-1 p-2 rounded bg-black text-white font-mono"
-                      />
+                      {activeTab === "css" && (
+                        <CodeEditor
+                          language="css"
+                          value={css}
+                          onChange={setCss}
+                          height="420px"
+                        />
+                      )}
+
                     </div>
                   )}
 
                   {activeTab === "js" && (
                     <div>
                       <div className="text-md text-left text-white/60">JavaScript</div>
-                      <textarea
-                        value={js}
-                        onChange={(e) => setJs(e.target.value)}
-                        rows={21}
-                        className="w-full mt-1 p-2 rounded bg-black text-white font-mono"
-                      />
+                      {activeTab === "js" && (
+                        <CodeEditor
+                          language="javascript"
+                          value={js}
+                          onChange={setJs}
+                          height="420px"
+                        />
+                      )}
+
                     </div>
                   )}
                 </div>
@@ -783,7 +838,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
           <div
             className="absolute inset-0"
             onClick={() => setFullscreenPreview(false)}
-            style={{ 
+            style={{
               backdropFilter: 'blur(8px)',
               WebkitBackdropFilter: 'blur(8px)',
               background: 'rgba(2,6,23,0.75)'
@@ -818,11 +873,11 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
 
             <div className="w-full h-full pt-12">
               {previewUrl ? (
-                <iframe 
-                  title="fullscreen-preview" 
-                  src={previewUrl} 
-                  className="w-full h-full bg-white" 
-                  sandbox="allow-scripts allow-same-origin" 
+                <iframe
+                  title="fullscreen-preview"
+                  src={previewUrl}
+                  className="w-full h-full bg-white"
+                  sandbox="allow-scripts allow-same-origin"
                 />
               ) : (
                 <div className="flex items-center justify-center h-full text-white/60">
@@ -831,6 +886,132 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
               )}
             </div>
           </div>
+        </div>
+      )}
+      {editorFullscreen && (
+        <div className="fixed inset-0 z-50">
+
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0"
+            onClick={() => setEditorFullscreen(false)}
+            style={{
+              backdropFilter: "",
+              WebkitBackdropFilter: "",
+              background: "rgba(2,6,23,0.75)",
+            }}
+          />
+
+          {/* Floating editor window */}
+          <Rnd
+            default={{
+              x: window.innerWidth / 2 - DEFAULT_EDITOR_SIZE.width / 2,
+              y: window.innerHeight / 2 - DEFAULT_EDITOR_SIZE.height / 2,
+              width: DEFAULT_EDITOR_SIZE.width,
+              height: DEFAULT_EDITOR_SIZE.height,
+            }}
+            minWidth={600}
+            minHeight={300}
+            bounds="window"
+            dragHandleClassName="editor-drag-handle"
+            enableResizing={{
+              top: true,
+              right: true,
+              bottom: true,
+              left: true,
+              topRight: true,
+              bottomRight: true,
+              bottomLeft: true,
+              topLeft: true,
+            }}
+            className="relative z-10"
+          >
+            <div
+              className="w-full h-full rounded-xl overflow-hidden flex flex-col"
+              style={{
+                background: "#000",
+                boxShadow: "0 25px 60px rgba(0,0,0,0.9)",
+                border: "1px solid rgba(255,255,255,0.12)",
+              }}
+            >
+
+              {/* HEADER (drag handle) */}
+              <div className="editor-drag-handle flex items-center gap-2 px-3 py-2 bg-black/90 border-b border-white/10 cursor-move select-none">
+
+                {/* traffic lights */}
+                <div className="flex gap-1">
+                  <span className="w-3 h-3 bg-red-500 rounded-full" />
+                  <span className="w-3 h-3 bg-yellow-400 rounded-full" />
+                  <span className="w-3 h-3 bg-green-400 rounded-full" />
+                </div>
+
+                {/* tabs */}
+                <div className="ml-3 flex gap-2 text-xs">
+                  {["html", "css", "js"].map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`px-2 py-1 rounded ${activeTab === tab
+                        ? "bg-indigo-600 text-white"
+                        : "bg-gray-800 text-white/60"
+                        }`}
+                    >
+                      {tab.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+
+                {/* actions */}
+                <div className="ml-auto flex gap-2">
+                  <button
+                    onClick={formatActive}
+                    className="px-3 py-1 rounded bg-gray-800 text-xs"
+                  >
+                    Format
+                  </button>
+
+                  <button
+                    onClick={() => setAiOpen(true)}
+                    className="px-3 py-1 rounded bg-gradient-to-br from-[#7C3AED] to-[#3B82F6] text-xs"
+                  >
+                    AI Assist
+                  </button>
+
+                  <button
+                    onClick={() => setEditorFullscreen(false)}
+                    className="px-3 py-1 rounded bg-red-600 text-xs"
+                  >
+                    ✕ Close
+                  </button>
+                </div>
+              </div>
+
+              {/* EDITOR AREA (resizes automatically) */}
+              <div className="flex-1">
+                <CodeEditor
+                  language={
+                    activeTab === "html"
+                      ? "html"
+                      : activeTab === "css"
+                        ? "css"
+                        : "javascript"
+                  }
+                  value={
+                    activeTab === "html"
+                      ? html
+                      : activeTab === "css"
+                        ? css
+                        : js
+                  }
+                  onChange={(val) => {
+                    if (activeTab === "html") setHtml(val);
+                    if (activeTab === "css") setCss(val);
+                    if (activeTab === "js") setJs(val);
+                  }}
+                />
+              </div>
+            </div>
+          </Rnd>
         </div>
       )}
     </section>
