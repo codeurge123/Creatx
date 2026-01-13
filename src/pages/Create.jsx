@@ -62,7 +62,7 @@ export default function Create() {
     height: 560, // header + editor
   };
 
-
+  const [showPopup, setShowPopup] = useState(false);
 
   // AI modal states
   const [aiOpen, setAiOpen] = useState(false);
@@ -163,6 +163,7 @@ export default function Create() {
     }
     return () => clearTimeout(timer);
   }, [error, saved]);
+
 
   function formatHtml(src) {
     try {
@@ -596,13 +597,23 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
           <div>
             <div className="mb-2 flex items-center justify-between">
               <span className="text-md text-white/70">Live preview</span>
-              <button
-                onClick={() => setFullscreenPreview(true)}
-                className="px-3 py-1 rounded bg-indigo-600 text-sm hover:bg-indigo-700 transition-colors"
-                title="Open fullscreen preview"
-              >
-                Fullscreen
-              </button>
+              <div>
+
+                <button
+                  onClick={() => setFullscreenPreview(true)}
+                  className="px-3 py-1 mr-2 rounded bg-indigo-600 text-sm hover:bg-indigo-700 transition-colors"
+                  title="Open fullscreen preview"
+                >
+                  Fullscreen
+                </button>
+                <button
+                  onClick={() => setShowPopup(true)}
+                  className="py-1 px-3 rounded bg-indigo-600 text-sm hover:bg-indigo-700 transition-colors"
+                  title="Add Friends"
+                >
+                  + Add Friends
+                </button>
+              </div>
             </div>
             <div className="border dark:border-white/6 rounded dark:bg-black" style={{ height: 635 }}>
               {previewUrl ? (
@@ -647,6 +658,23 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
           ))}
         </div>
       </div>
+
+
+      {/* Popup */}
+      {showPopup && (
+        <div className="fixed inset-10 flex items-center justify-center  z-50 overflow-hidden">
+          <div className="h-56 w-80 bg-indigo-700  rounded text-white flex flex-col items-center justify-center gap-6">
+            <h2 className="text-xl font-semibold">Coming Soon...</h2>
+
+            <button
+              onClick={() => setShowPopup(false)}
+              className="px-4 py-2 bg-white text-indigo-700 rounded hover:bg-gray-200"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
 
       {aiOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
