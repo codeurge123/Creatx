@@ -37,7 +37,9 @@ function pushCreateLog(ts) {
     const arr = readCreateLog();
     arr.unshift(ts);
     localStorage.setItem(CREATE_LOG, JSON.stringify(arr));
-  } catch { }
+  } catch {
+    alert("Something went wrong , Try again later")
+  }
 }
 
 export default function Create() {
@@ -98,6 +100,7 @@ export default function Create() {
     };
   }, [editorFullscreen]);
 
+  const [copyAnimation, setCopyAnimation] = useState(null)
 
   // build preview blob
   useEffect(() => {
@@ -608,7 +611,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                 </button>
                 <button
                   onClick={() => setShowPopup(true)}
-                  className="py-1 px-3 rounded bg-indigo-600 text-sm hover:bg-indigo-700 transition-colors"
+                  className="py-1 px-3 rounded bg-indigo-600 text-sm duration-150 hover:bg-indigo-700 transition-colors"
                   title="Add Friends"
                 >
                   + Add Friends
@@ -635,27 +638,45 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
           </div>
         </div>
 
-        <hr className="my-4 border-white/6" />
 
+        <hr className="my-4 border-white/6" />
         <h3 className="text-sm font-semibold mb-2">Your animations</h3>
         <div className="space-y-2">
           {readLocal().length === 0 && <div className="text-sm text-white/60">You have no saved animations yet.</div>}
-          {readLocal().map((s) => (
-            <div key={s.id} className="flex items-center justify-between bg-white/3 p-2 rounded">
+          {readLocal().map((s, i) => (
+            <div
+              key={s.id}
+              className={`flex items-center hover:scale-105 duration-150 transition-all  justify-between p-3 rounded-lg
+      ${i % 2 === 0 ? "bg-slate-700/40" : "hover:bg-slate-800/40"}
+    `}
+            >
               <div>
                 <div className="font-medium">{s.title}</div>
                 <div className="text-xs text-white/60">{s.id}</div>
               </div>
+
               <div className="flex items-center gap-2">
-                <button onClick={() => navigator.clipboard.writeText(s.code)} className="text-xs px-2 py-1 rounded bg-indigo-600">
-                  Copy
+                <button
+                  onClick={() => {
+                    setCopyAnimation(s.id);
+                    navigator.clipboard.writeText(s.code);
+                    setTimeout(() => setCopyAnimation(null), 2000);
+                  }}
+                  className="text-xs px-2 py-1 rounded bg-indigo-600"
+                >
+                  {copyAnimation === s.id ? "Copied" : "Copy"}
                 </button>
-                <button onClick={() => deleteOwn(s.id)} className="text-xs px-2 py-1 rounded bg-red-600">
+
+                <button
+                  onClick={() => deleteOwn(s.id)}
+                  className="text-xs px-2 py-1 rounded bg-red-600"
+                >
                   Delete
                 </button>
               </div>
             </div>
           ))}
+
         </div>
       </div>
 
@@ -663,7 +684,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
       {/* Popup */}
       {showPopup && (
         <div className="fixed inset-10 flex items-center justify-center  z-50 overflow-hidden">
-          <div className="h-56 w-80 bg-indigo-700  rounded text-white flex flex-col items-center justify-center gap-6">
+          <div className="h-56 w-80 bg-indigo-600  rounded text-white flex flex-col items-center justify-center gap-6">
             <h2 className="text-xl font-semibold">Coming Soon...</h2>
 
             <button
