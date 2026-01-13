@@ -848,19 +848,16 @@ function PreviewContent({ card }) {
 
 
 
-function AlertNotify({ message, onClose }) {
+function AlertNotify({ message }) {
   const [visible, setVisible] = useState(false);
 
   // Animate IN on mount
   useEffect(() => {
     setVisible(true);
+    setTimeout(() => {
+      setVisible(false)
+    }, 3000);
   }, []);
-
-  // Animate OUT then close
-  const handleClose = () => {
-    setVisible(false);
-    setTimeout(onClose, 500); // match animation duration
-  };
 
   return (
     <div
@@ -876,12 +873,6 @@ function AlertNotify({ message, onClose }) {
       `}
     >
       <span>{message}</span>
-      <button
-        onClick={handleClose}
-        className="p-1 rounded bg-red-700 hover:border-1 hover:border-red-800 hover:bg-red-800 transition"
-      >
-        <X size={16} />
-      </button>
     </div>
   );
 }
