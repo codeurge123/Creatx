@@ -1,18 +1,31 @@
 import React from 'react'
+import { useState, useEffect } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 
 export default function Navbar() {
   const navigate = useNavigate()
 
-  const base = 'mx-auto max-w-6xl px-8 py-4 flex items-center justify-between rounded-3xl border transition-colors duration-200'
-  // permanently use scrolled styles
-  const scrolledClasses = 'bg-indigo-900/40 border-indigo-600/40 backdrop-blur-md shadow-xl'
-  const boxClasses = `${base} ${scrolledClasses}`
+  
+
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 30)
+    }
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  const normal = 'bg-indigo-900/40 scale-105 shadow-xl backdrop-blur-md mx-auto max-w-8xl px-8 py-4 flex items-center justify-between rounded-3xl  transition-all duration-150'
+
+  const scrolledStyle  = 'bg-indigo-900/40 border-indigo-600/40 scale-100 backdrop-blur-md shadow-xl mx-auto max-w-6xl px-8 py-4 flex items-center justify-between rounded-3xl  transition-all duration-200';
+
 
   return (
     <header className="fixed top-7 left-0 right-0 z-50">
       <nav className="max-w-7xl mx-auto px-4">
-        <div className={boxClasses}>
+        <div className={` ${scrolled ? scrolledStyle : normal}`}>
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/')} role="button" tabIndex={0}>
             {/* <img src="/logo.png" alt="logo" className="h-7 w-6 rounded  object-cover" onError={(e)=>{e.currentTarget.onerror=null; e.currentTarget.style.display='none'}} /> */}
             <div className="text-white font-semibold text-3xl">Creatx.</div>
@@ -77,7 +90,7 @@ export default function Navbar() {
           </NavLink>
         </div>
       </nav>
-      
+
 
     </header>
   )

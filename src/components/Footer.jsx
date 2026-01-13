@@ -128,6 +128,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link className="text-slate-300 text-sm hover:text-white">
+                  Community
+                </Link>
+              </li>
+              <li>
                 <Link
                   className="text-slate-300 text-sm hover:text-white"
                   to="/library"
@@ -147,11 +152,6 @@ export default function Footer() {
                   }
                 >
                   Create
-                </Link>
-              </li>
-              <li>
-                <Link className="text-slate-300 text-sm hover:text-white">
-                  Contact
                 </Link>
               </li>
             </ul>
