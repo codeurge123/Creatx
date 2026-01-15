@@ -684,7 +684,7 @@ card.addEventListener('mouseleave',()=>{
     description: "Orbital rotation loading animation",
     language: "HTML / CSS",
     html: `<div class="orbit-wrap"><div class="orbit-center"></div><div class="orbit-path"><div class="orbit-dot"></div></div><div class="orbit-path orbit-2"><div class="orbit-dot"></div></div></div>`,
-    css: `.orbit-wrap{position:relative;width:140px;height:140px;}.orbit-center{position:absolute;width:20px;height:20px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 0 20px rgba(102,126,234,0.8);}.orbit-path{position:absolute;width:100%;height:100%;border:2px solid rgba(99,102,241,0.2);border-radius:50%;animation:orbit 3s linear infinite;}.orbit-2{animation-duration:2s;width:70%;height:70%;top:15%;left:15%;}.orbit-dot{position:absolute;width:12px;height:12px;background:#06b6d4;border-radius:50%;top:0;left:50%;transform:translateX(-50%);box-shadow:0 0 10px #06b6d4;}@keyframes orbit{to{transform:rotate(360deg);}}`,
+    css: `.orbit-wrap{position:relative;width:140px;height:140px;}.orbit-center{position:absolute;width:20px;height:20px;background:linear-gradient(135deg,orange,orange);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 0 20px rgba(102,126,234,0.8);}.orbit-path{position:absolute;width:100%;height:100%;border:2px solid orange;border-radius:50%;animation:orbit 3s linear infinite;}.orbit-2{animation-duration:2s;width:70%;height:70%;top:15%;left:15%;}.orbit-dot{position:absolute;width:12px;height:12px;background:orange;border-radius:50%;top:0;left:50%;transform:translateX(-50%);box-shadow:0 0 10px orange;}@keyframes orbit{to{transform:rotate(360deg);}}`,
     js: "",
     category: "css",
   },

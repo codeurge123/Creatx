@@ -831,7 +831,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                   <div className="mt-3 flex flex-wrap gap-2">
                     <button
                       onClick={insertParsedBlocks}
-                      className="px-3 py-1 rounded bg-emerald-600 text-sm"
+                      className="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 cursor-pointer text-sm"
                       disabled={!parsedResult}
                       title="Insert all parsed blocks (HTML → CSS → JS)"
                     >
@@ -840,7 +840,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
 
                     <button
                       onClick={() => navigator.clipboard.writeText(aiResult || "")}
-                      className="px-3 py-1 rounded bg-indigo-600 text-sm"
+                      className="px-3 py-1 rounded bg-indigo-600 cursor-pointer text-sm"
                       disabled={!aiResult}
                     >
                       Copy raw
@@ -848,7 +848,7 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
 
                     <button
                       onClick={saveAiSnippet}
-                      className="px-3 py-1 rounded bg-sky-600 text-sm"
+                      className="px-3 py-1 rounded bg-sky-600 cursor-pointer text-sm"
                       disabled={!aiResult}
                     >
                       Save as snippet
@@ -856,21 +856,21 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
 
                     <button
                       onClick={applyHtml}
-                      className="px-3 py-1 rounded bg-violet-600 text-sm"
+                      className="px-3 py-1 rounded bg-violet-600 cursor-pointer text-sm"
                       disabled={!aiResult}
                     >
                       Apply HTML
                     </button>
                     <button
                       onClick={applyCss}
-                      className="px-3 py-1 rounded bg-rose-600 text-sm"
+                      className="px-3 py-1 rounded bg-rose-600 cursor-pointer text-sm"
                       disabled={!aiResult}
                     >
                       Apply CSS
                     </button>
                     <button
                       onClick={applyJs}
-                      className="px-3 py-1 rounded bg-yellow-600 text-sm"
+                      className="px-3 py-1 rounded bg-yellow-600 cursor-pointer text-sm"
                       disabled={!aiResult}
                     >
                       Apply JS
