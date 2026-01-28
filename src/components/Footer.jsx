@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const FORM_ACTION = ""; // Optional: replace with real endpoint
 
@@ -117,42 +117,40 @@ export default function Footer() {
             </div>
             <ul className="ml-5 space-y-2 text-left">
               <li>
-                <Link
-                  className="text-slate-300 text-sm hover:text-white"
-                  to=""
+                <NavLink
+                  
+                  to="/"
+                  className={({isActive}) => isActive ? "text-slate-50 text-sm hover:text-white" : "text-slate-300 text-sm hover:text-white"}
                   onClick={() =>
                     window.scrollTo({ top: 0, behavior: "smooth" })
                   }
                 >
                   Home
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link className="text-slate-300 text-sm hover:text-white">
+                <NavLink
+                  to="/community"
+                  className={({isActive}) => isActive ? "text-slate-50 text-sm hover:text-white" : "text-slate-300 text-sm hover:text-white"}
+                > 
                   Community
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link
-                  className="text-slate-300 text-sm hover:text-white"
+                <NavLink
                   to="/library"
-                  onClick={() =>
-                    window.scrollTo({ top: 0, behavior: "smooth" })
-                  }
+                  className={({isActive}) => isActive ? "text-slate-50 text-sm hover:text-white" : "text-slate-300 text-sm hover:text-white"}
                 >
                   Animations
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link
-                  className="text-slate-300 text-sm hover:text-white"
+                <NavLink
                   to="/create"
-                  onClick={() =>
-                    window.scrollTo({ top: 0, behavior: "smooth" })
-                  }
+                  className={({isActive}) => isActive ? "text-slate-50 text-sm hover:text-white" : "text-slate-300 text-sm hover:text-white"}
                 >
                   Create
-                </Link>
+                </NavLink>
               </li>
             </ul>
           </div>

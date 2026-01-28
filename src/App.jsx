@@ -20,8 +20,8 @@ import {
   Maximize2
 } from 'lucide-react';
 import Prism from "prismjs";
-import "prismjs/themes/prism-tomorrow.css"; // VS Code dark-like
-import "prismjs/components/prism-markup"; // HTML
+import "prismjs/themes/prism-tomorrow.css"; 
+import "prismjs/components/prism-markup";
 import "prismjs/components/prism-css";
 import "prismjs/components/prism-javascript";
 

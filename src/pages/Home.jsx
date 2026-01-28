@@ -32,8 +32,8 @@ export default function Home() {
         </section>
 
         <section className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <article className="border border-gray-800 bg-white/3 rounded-xl p-8 text-center flex flex-col items-center gap-4 home-card transition-transform duration-300 transform hover:-translate-y-3 hover:scale-105 hover:shadow-2xl cursor-pointer"
-            role="button" tabIndex={0}
+          <article className="border border-gray-800 bg-white/3 rounded-xl p-8 text-center flex flex-col items-center gap-4 home-card transition-transform duration-300 transform hover:-translate-y-3 hover:scale-105 hover:shadow-2xl"
+            role="" tabIndex={0}
             onMouseMove={(e) => {
               const rect = e.currentTarget.getBoundingClientRect()
               e.currentTarget.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`)
@@ -50,8 +50,8 @@ export default function Home() {
             <p className="mt-2 text-slate-300">Copy-ready snippets that work in any project.</p>
           </article>
 
-          <article className="border border-gray-800 bg-white/3 rounded-xl p-8 text-center flex flex-col items-center gap-4 home-card transition-transform duration-300 transform hover:-translate-y-3 hover:scale-105 hover:shadow-2xl cursor-pointer"
-            role="button" tabIndex={0}
+          <article className="border border-gray-800 bg-white/3 rounded-xl p-8 text-center flex flex-col items-center gap-4 home-card transition-transform duration-300 transform hover:-translate-y-3 hover:scale-105 hover:shadow-2xl"
+            role="" tabIndex={0}
             onMouseMove={(e) => {
               const rect = e.currentTarget.getBoundingClientRect()
               e.currentTarget.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`)
@@ -68,8 +68,8 @@ export default function Home() {
             <p className="mt-2 text-slate-300">Minimal CSS & JS with small footprint.</p>
           </article>
 
-          <article className="bg-white/3 border border-gray-800 rounded-xl p-8 text-center flex flex-col items-center gap-4 home-card transition-transform duration-300 transform hover:-translate-y-3 hover:scale-105 hover:shadow-2xl cursor-pointer"
-            role="button" tabIndex={0}
+          <article className="bg-white/3 border border-gray-800 rounded-xl p-8 text-center flex flex-col items-center gap-4 home-card transition-transform duration-300 transform hover:-translate-y-3 hover:scale-105 hover:shadow-2xl"
+            role="" tabIndex={0}
             onMouseMove={(e) => {
               const rect = e.currentTarget.getBoundingClientRect()
               e.currentTarget.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`)
