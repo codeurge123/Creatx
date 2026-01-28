@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import Create from "./pages/Create";
 import Login from "./pages/Login.jsx";
 import DocsShell from "./pages/DocsShell.jsx";
+import Community from "./pages/Community.jsx";
 import {
   Heart,
   X,
@@ -922,6 +923,7 @@ function App() {
             />
             <Route path="/create" element={<Create />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/community" element={<Community />} />
           </Routes>
         </main>
 
