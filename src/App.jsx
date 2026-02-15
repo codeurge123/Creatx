@@ -10,6 +10,7 @@ import AnimationPanel from "./components/AnimationPanel";
 import Home from "./pages/Home";
 import Create from "./pages/Create";
 import Login from "./pages/Login.jsx";
+import SignUp from './pages/SignUp.jsx'
 import DocsShell from "./pages/DocsShell.jsx";
 import Community from "./pages/Community.jsx";
 import {
@@ -42,7 +43,8 @@ function NavbarController() {
 
   // hide footer only on login page
   if (location.pathname === "/login") return null;
-
+  if(location.pathname === '/signup') return null
+ 
   return <Navbar />;
 }
 
@@ -923,6 +925,7 @@ function App() {
             />
             <Route path="/create" element={<Create />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/community" element={<Community />} />
           </Routes>
         </main>

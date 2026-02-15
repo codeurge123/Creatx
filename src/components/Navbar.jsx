@@ -1,6 +1,8 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { IoIosArrowForward } from "react-icons/io";
+
 
 export default function Navbar() {
   const navigate = useNavigate()
@@ -82,11 +84,16 @@ export default function Navbar() {
             to="/login"
             className={({ isActive }) =>
               isActive
-                ? "px-5 py-2 bg-white/10 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
-                : "px-5 py-2 bg-indigo-600 text-white hover:text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:bg-indigo-700"
+                ? "px-5 py-2 bg-white/10 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
+                : "px-5 py-2 bg-indigo-600 text-white hover:text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:bg-indigo-700"
             }
           >
-            Login
+            <div className='flex items-center gap-2'>
+            Get Started  
+            <div className=''>
+            <IoIosArrowForward />
+            </div>
+            </div>
           </NavLink>
         </div>
       </nav>
