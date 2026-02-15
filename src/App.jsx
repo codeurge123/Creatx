@@ -35,6 +35,7 @@ function FooterController() {
 
   // hide footer only on login page
   if (location.pathname === "/login") return null;
+  if (location.pathname === "/signup") return null;
 
   return <Footer />;
 }

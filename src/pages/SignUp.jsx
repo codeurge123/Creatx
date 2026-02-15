@@ -41,14 +41,6 @@ export default function SignUp() {
           </Link>
           
         </div>
-        <div className="flex items-center gap-4">
-          <Link to="/login" className="px-4 py-2 text-white/70 hover:text-white transition-colors font-medium">
-            Sign In
-          </Link>
-          <Link to="/signup" className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white font-semibold transition-all">
-            Sign Up
-          </Link>
-        </div>
       </header>
 
       {/* Animated background shapes */}
