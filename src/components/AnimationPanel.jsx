@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-// no router hooks needed here
+
 
 const snippets = [
   {

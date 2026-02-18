@@ -21,7 +21,7 @@ export default function Navbar() {
 
   const normal = 'bg-indigo-900/40 scale-105 shadow-xl backdrop-blur-md mx-auto max-w-8xl px-8 py-4 flex items-center justify-between rounded-3xl  transition-all duration-150'
 
-  const scrolledStyle  = 'bg-indigo-900/40 border-indigo-600/40 scale-100 backdrop-blur-md shadow-xl mx-auto max-w-6xl px-8 py-4 flex items-center justify-between rounded-3xl  transition-all duration-200';
+  const scrolledStyle  = 'bg-indigo-900/40 border-indigo-600/40 scale-100 backdrop-blur-md shadow-xl mx-auto max-w-6xl px-8 py-4 flex items-center justify-between rounded-full transition-all duration-200';
 
 
   return (
