@@ -2,6 +2,7 @@
 
 **Creatx** — a React + Vite UI project (in active development).  
 Live demo: https://creatxui.vercel.app
+Backend Repo : https://github.com/codeurge123/creatx-backend
 
 Currently working on this — stay tuned for updates.
 
