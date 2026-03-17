@@ -1,25 +1,48 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { userAPI } from "../services/userService";
 
 export default function SignUp() {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      setError("Passwords do not match!");
       return;
     }
 
-    navigate("/library");
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long!");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await userAPI.register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      // Registration successful, redirect to login
+      navigate("/login");
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -146,12 +169,19 @@ export default function SignUp() {
               </span>
             </div>
 
+            {error && (
+              <div className="text-red-400 text-sm text-center bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+                {error}
+              </div>
+            )}
+
             {/* Button */}
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg font-semibold hover:opacity-90 transition text-sm sm:text-base"
+              disabled={loading}
+              className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg font-semibold hover:opacity-90 transition text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Create Account
+              {loading ? "Creating Account..." : "Create Account"}
             </button>
           </form>
 

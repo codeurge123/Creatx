@@ -5,7 +5,14 @@ import {
 } from 'lucide-react';
 import { PreviewContent } from "./PreviewContent";
 
-function AnimationCard({ card, isFavorite, onToggleFavorite, onClick }) {
+function AnimationCard({ card, isFavorite, onToggleFavorite, onClick, onOwnerClick }) {
+  // Handle both API data and sample data formats
+  const cardId = card._id || card.id;
+  const cardTitle = card.title;
+  const cardDescription = card.description || "Custom animation";
+  const cardLanguage = card.language || (card.category === 'js' ? 'HTML / CSS / JS' : 'HTML / CSS');
+  const cardCategory = card.category;
+
   return (
     <div
       className="relative group bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-2xl overflow-hidden border border-white/10 hover:border-indigo-500/50 transition-all  hover:scale-105"
@@ -19,27 +26,50 @@ function AnimationCard({ card, isFavorite, onToggleFavorite, onClick }) {
       <div className="p-4 cursor-pointer" onClick={onClick}>
         <div className="flex items-start justify-between mb-2">
           <div className="flex-1">
-            <h3 className="font-semibold text-lg text-left text-white">{card.title}</h3>
-            <p className="text-sm text-gray-400 text-left mt-1">{card.description}</p>
+            <h3 className="font-semibold text-lg text-left text-white">{cardTitle}</h3>
+            <p className="text-sm text-gray-400 text-left mt-1">{cardDescription}</p>
+            {card.owner?.name && (
+              <div className="mt-1 text-xs text-white/60">
+                By{' '}
+                {onOwnerClick ? (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOwnerClick();
+                    }}
+                    className="text-indigo-200 underline"
+                  >
+                    {card.owner.name}
+                  </button>
+                ) : (
+                  <span className="text-indigo-200">{card.owner.name}</span>
+                )}
+              </div>
+            )}
           </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleFavorite();
-            }}
-            className="ml-2 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all duration-150"
-          >
-            <Heart
-              size={20}
-              className={`transition-all ${isFavorite
-                ? "fill-red-500 text-red-500"
-                : "text-gray-400 hover:text-red-400"
-                }`}
-            />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleFavorite();
+              }}
+              className="flex items-center gap-1 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all duration-150"
+            >
+              <Heart
+                size={20}
+                className={`transition-all ${isFavorite
+                  ? "fill-red-500 text-red-500"
+                  : "text-gray-400 hover:text-red-400"
+                  }`}
+              />
+              {card.likesCount != null && (
+                <span className="text-xs text-gray-300">{card.likesCount}</span>
+              )}
+            </button>
+          </div>
         </div>
         <span className="inline-block px-3 py-1 text-xs rounded-full bg-indigo-500/20 text-indigo-300">
-          {card.language}
+          {cardLanguage}
         </span>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CodeEditor from "../components/CodeEditor";
 import { Rnd } from "react-rnd";
+import { animationAPI } from "../services/animationService";
 
 
 const LOCAL_KEY = "creatx_user_snippets";
@@ -56,6 +57,9 @@ export default function Create() {
   const [error, setError] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
 
+  const [myAnimations, setMyAnimations] = useState([]);
+  const [loadingMyAnimations, setLoadingMyAnimations] = useState(true);
+
   // terminal active tab: "html" | "css" | "js"
   const [activeTab, setActiveTab] = useState("html");
 
@@ -80,6 +84,10 @@ export default function Create() {
     setSaved(false);
     setError("");
   }, [title, html, css, js, share]);
+
+  useEffect(() => {
+    loadMyAnimations();
+  }, []);
 
   // Prevent body scroll when fullscreen preview is open
   useEffect(() => {
@@ -120,28 +128,57 @@ export default function Create() {
     return arr.length;
   };
 
-  const addSnippet = () => {
-    const now = Date.now();
-    const used = countLast24h();
-    if (used >= MAX_PER_DAY) {
-      setError("Token exceed — try after 24 hours");
+  const loadMyAnimations = async () => {
+    setLoadingMyAnimations(true);
+    try {
+      const resp = await animationAPI.getUserAnimations();
+      setMyAnimations(resp.data.data || []);
+    } catch (err) {
+      console.error("Failed to load animations:", err);
+    } finally {
+      setLoadingMyAnimations(false);
+    }
+  };
+
+  const loadAnimationToEditor = (animation) => {
+    setTitle(animation.title || "");
+    setHtml(animation.html || "");
+    setCss(animation.css || "");
+    setJs(animation.js || "");
+    setShare(!!animation.isPublic);
+  };
+
+  const addSnippet = async () => {
+    if (!title.trim()) {
+      setError("Please enter a title for your animation");
       return;
     }
 
-    const code = `<!-- HTML -->\n${html}\n\n/* CSS */\n${css}\n\n/* JS */\n${js}`;
-    const id = `user-${Date.now()}`;
-    const item = { id, title, code };
-    const local = readLocal();
-    local.unshift(item);
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(local));
-    if (share) {
-      const s = readShared();
-      s.unshift(item);
-      localStorage.setItem(SHARED_KEY, JSON.stringify(s));
+    if (!html.trim() || !css.trim()) {
+      setError("HTML and CSS are required");
+      return;
     }
-    pushCreateLog(now);
-    window.dispatchEvent(new Event("creatx:snippets-changed"));
-    setSaved(true);
+
+    setError("");
+
+    try {
+      const animationData = {
+        title: title.trim(),
+        html: html.trim(),
+        css: css.trim(),
+        js: js.trim(),
+        category: js.trim() ? "js" : "css",
+        isPublic: share,
+      };
+
+      await animationAPI.create(animationData);
+      setSaved(true);
+      setError("");
+      await loadMyAnimations();
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to save animation");
+      console.error("Error saving animation:", err);
+    }
   };
 
   const deleteOwn = (id) => {
@@ -640,43 +677,47 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
 
 
         <hr className="my-4 border-white/6" />
-        <h3 className="text-sm font-semibold mb-2">Your animations</h3>
+        <h3 className="text-sm font-semibold mb-2">Your saved animations</h3>
         <div className="space-y-2">
-          {readLocal().length === 0 && <div className="text-sm text-white/60">You have no saved animations yet.</div>}
-          {readLocal().map((s, i) => (
-            <div
-              key={s.id}
-              className={`flex items-center hover:scale-105 duration-150 transition-all  justify-between p-3 rounded-lg
-      ${i % 2 === 0 ? "bg-slate-700/40" : "hover:bg-slate-800/40"}
-    `}
-            >
-              <div>
-                <div className="font-medium">{s.title}</div>
-                <div className="text-xs text-white/60">{s.id}</div>
+          {loadingMyAnimations ? (
+            <div className="text-sm text-white/60">Loading your animations...</div>
+          ) : myAnimations.length === 0 ? (
+            <div className="text-sm text-white/60">You have no saved animations yet. Create one and it will appear here.</div>
+          ) : (
+            myAnimations.map((anim, i) => (
+              <div
+                key={anim._id || anim.id}
+                className={`flex items-center justify-between gap-3 p-3 rounded-lg transition-all duration-150 ${
+                  i % 2 === 0 ? "bg-slate-700/40" : "bg-slate-800/40"
+                }`}
+              >
+                <div>
+                  <div className="font-medium text-white">{anim.title}</div>
+                  <div className="text-xs text-white/60">
+                    {anim.category?.toUpperCase()} • {anim.isPublic ? "Shared" : "Private"}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => loadAnimationToEditor(anim)}
+                    className="text-xs px-2 py-1 rounded bg-indigo-600"
+                  >
+                    Load
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShare(!anim.isPublic);
+                      loadAnimationToEditor(anim);
+                    }}
+                    className="text-xs px-2 py-1 rounded bg-white/10 hover:bg-white/20"
+                  >
+                    {anim.isPublic ? "Make Private" : "Set Shared"}
+                  </button>
+                </div>
               </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    setCopyAnimation(s.id);
-                    navigator.clipboard.writeText(s.code);
-                    setTimeout(() => setCopyAnimation(null), 2000);
-                  }}
-                  className="text-xs px-2 py-1 rounded bg-indigo-600"
-                >
-                  {copyAnimation === s.id ? "Copied" : "Copy"}
-                </button>
-
-                <button
-                  onClick={() => deleteOwn(s.id)}
-                  className="text-xs px-2 py-1 rounded bg-red-600"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-
+            ))
+          )}
         </div>
       </div>
 

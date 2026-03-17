@@ -11,8 +11,9 @@ import Home from "./pages/Home";
 import Create from "./pages/Create";
 import Login from "./pages/Login.jsx";
 import SignUp from './pages/SignUp.jsx'
-import DocsShell from "./pages/DocsShell.jsx";
 import Community from "./pages/Community.jsx";
+import Profile from "./pages/Profile.jsx";
+import UserProfile from "./pages/UserProfile.jsx";
 import {
   Heart,
   X,
@@ -122,7 +123,6 @@ function App() {
         <main className="site-main max-w-6xl mx-auto pt-28 pb-8 px-4 flex-1 w-full">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/docs" element={<DocsShell />} />
             <Route
               path="/library"
               element={
@@ -135,8 +135,8 @@ function App() {
                 />
               }
             />
-            <Route path="/create" element={<Create />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/create" element={<Create />} />            <Route path="/profile" element={<Profile />} />
+            <Route path="/user/:id" element={<UserProfile />} />            <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/community" element={<Community />} />
             <Route path="/forgot-password" element={<ForgetPassword />} />

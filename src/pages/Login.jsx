@@ -1,17 +1,38 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { userAPI } from "../services/userService";
 
 export default function Login() {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/library");
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await userAPI.login(formData);
+      const { accessToken, refreshToken } = response.data.data;
+
+      // Store tokens in localStorage
+      localStorage.setItem('accessToken', accessToken);
+      if (refreshToken) {
+        localStorage.setItem('refreshToken', refreshToken);
+      }
+
+      // Navigate to library
+      navigate("/library");
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -93,11 +114,18 @@ export default function Login() {
               </Link>
             </div>
 
+            {error && (
+              <div className="text-red-400 text-sm text-center bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+                {error}
+              </div>
+            )}
+
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg font-semibold hover:opacity-90 transition"
+              disabled={loading}
+              className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign In
+              {loading ? "Signing In..." : "Sign In"}
             </button>
           </form>
 

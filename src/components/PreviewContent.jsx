@@ -24,10 +24,10 @@ function PreviewContent({ card }) {
   useEffect(() => {
     if (!previewRef.current) return;
 
-    const container = previewRef.current;
+    const previewContainer = previewRef.current;
 
     // Clear everything first
-    container.innerHTML = '';
+    previewContainer.innerHTML = '';
 
     // Create a new wrapper div
     const wrapper = document.createElement('div');
@@ -61,7 +61,7 @@ function PreviewContent({ card }) {
     }
 
     // Append wrapper to container
-    container.appendChild(wrapper);
+    previewContainer.appendChild(wrapper);
 
     // CRITICAL: Force DOM reflow to restart animations
     void wrapper.offsetWidth;
@@ -76,12 +76,13 @@ function PreviewContent({ card }) {
         setTimeout(() => {
           try {
             const scopedScript = new Function(
-              'container',
+              'animationElement',
               `
+                const container = animationElement;
                 const document = {
-                  querySelector: (s) => container.querySelector(s),
-                  querySelectorAll: (s) => container.querySelectorAll(s),
-                  getElementById: (id) => container.querySelector('#' + id)
+                  querySelector: (s) => animationElement.querySelector(s),
+                  querySelectorAll: (s) => animationElement.querySelectorAll(s),
+                  getElementById: (id) => animationElement.querySelector('#' + id)
                 };
                 ${card.js}
               `
@@ -96,7 +97,7 @@ function PreviewContent({ card }) {
 
     // Cleanup function
     return () => {
-      container.innerHTML = '';
+      previewContainer.innerHTML = '';
     };
   }, [key, card]);
 
