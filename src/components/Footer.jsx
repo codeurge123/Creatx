@@ -138,10 +138,10 @@ export default function Footer() {
               </li>
               <li>
                 <NavLink
-                  to="/library"
+                  to="/components"
                   className={({isActive}) => isActive ? "text-slate-50 text-sm hover:text-white" : "text-slate-300 text-sm hover:text-white"}
                 >
-                  Animations
+                  Components
                 </NavLink>
               </li>
               <li>
@@ -162,7 +162,7 @@ export default function Footer() {
             <ul className="space-y-2 text-left">
               <li>
                 <a className="text-slate-300 text-sm hover:text-white" href="#">
-                  CSS Animations
+                  CSS Components
                 </a>
               </li>
               <li>
@@ -233,12 +233,12 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between text-sm text-slate-400">
           <div>© {new Date().getFullYear()} Creatx. All rights reserved.</div>
           <div className="mt-4 md:mt-0 flex items-center gap-6">
-            <a className="hover:text-white" href="#">
+            <Link className="hover:text-white" to="/privacy">
               Privacy Policy
-            </a>
-            <a className="hover:text-white" href="#">
+            </Link>
+            <Link className="hover:text-white" to="/terms">
               Terms of Service
-            </a>
+            </Link>
             <a className="hover:text-white" href="#">
               Cookie Policy
             </a>

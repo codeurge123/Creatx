@@ -73,7 +73,7 @@ export default function UserProfile() {
           <div className="text-center text-red-400">{error}</div>
         ) : (
           <>
-            <h2 className="text-xl font-semibold mb-4">Shared Animations</h2>
+            <h2 className="text-xl font-semibold mb-4">Shared Components</h2>
             {shared.length === 0 ? (
               <div className="text-white/60">This user has not shared any animations yet.</div>
             ) : (

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import CodeEditor from "../components/CodeEditor";
 import { Rnd } from "react-rnd";
 import { animationAPI } from "../services/animationService";
+import { isAuthenticated, subscribeToAuthChanges } from "../utils/auth";
 
 
 const LOCAL_KEY = "creatx_user_snippets";
@@ -49,7 +50,7 @@ export default function Create() {
   const [css, setCss] = useState(
     ".demo{width:60px;height:60px;background:#06b6d4;border-radius:8px;animation:float 3s infinite}"
   );
-  const [editorFullscreen, setEditorFullscreen] = useState(false);
+  // const [editorFullscreen, setEditorFullscreen] = useState(false);
 
   const [js, setJs] = useState("");
   const [share, setShare] = useState(false);
@@ -59,6 +60,7 @@ export default function Create() {
 
   const [myAnimations, setMyAnimations] = useState([]);
   const [loadingMyAnimations, setLoadingMyAnimations] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(isAuthenticated());
 
   // terminal active tab: "html" | "css" | "js"
   const [activeTab, setActiveTab] = useState("html");
@@ -89,6 +91,20 @@ export default function Create() {
     loadMyAnimations();
   }, []);
 
+  useEffect(() => {
+    return subscribeToAuthChanges((detail) => {
+      const nextLoggedIn = Boolean(detail?.isAuthenticated);
+      setLoggedIn(nextLoggedIn);
+
+      if (nextLoggedIn) {
+        loadMyAnimations();
+      } else {
+        setMyAnimations([]);
+        setLoadingMyAnimations(false);
+      }
+    });
+  }, []);
+
   // Prevent body scroll when fullscreen preview is open
   useEffect(() => {
     if (fullscreenPreview) {
@@ -101,12 +117,12 @@ export default function Create() {
     };
   }, [fullscreenPreview]);
 
-  useEffect(() => {
-    document.body.style.overflow = editorFullscreen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [editorFullscreen]);
+  // useEffect(() => {
+  //   document.body.style.overflow = editorFullscreen ? "hidden" : "";
+  //   return () => {
+  //     document.body.style.overflow = "";
+  //   };
+  // }, [editorFullscreen]);
 
   const [copyAnimation, setCopyAnimation] = useState(null)
 
@@ -129,6 +145,12 @@ export default function Create() {
   };
 
   const loadMyAnimations = async () => {
+    if (!isAuthenticated()) {
+      setMyAnimations([]);
+      setLoadingMyAnimations(false);
+      return;
+    }
+
     setLoadingMyAnimations(true);
     try {
       const resp = await animationAPI.getUserAnimations();
@@ -149,6 +171,11 @@ export default function Create() {
   };
 
   const addSnippet = async () => {
+    if (!isAuthenticated()) {
+      setError("Please login first to save your animation.");
+      return;
+    }
+
     if (!title.trim()) {
       setError("Please enter a title for your animation");
       return;
@@ -181,12 +208,20 @@ export default function Create() {
     }
   };
 
-  const deleteOwn = (id) => {
-    const local = readLocal().filter((s) => s.id !== id);
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(local));
-    const shared = readShared().filter((s) => s.id !== id);
-    localStorage.setItem(SHARED_KEY, JSON.stringify(shared));
-    window.dispatchEvent(new Event("creatx:snippets-changed"));
+  const deleteAnimation = async (id) => {
+    if (!isAuthenticated()) {
+      setError("Please login first to delete your animation.");
+      return;
+    }
+
+    setError("");
+
+    try {
+      await animationAPI.delete(id);
+      setMyAnimations((prev) => prev.filter((anim) => (anim._id || anim.id) !== id));
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to delete animation");
+    }
   };
 
   useEffect(() => {
@@ -411,6 +446,11 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
   }
 
   function saveAiSnippet() {
+    if (!isAuthenticated()) {
+      setAiError("Please login first to save your animation.");
+      return;
+    }
+
     try {
       const now = Date.now();
       const id = `ai-${Date.now()}`;
@@ -479,11 +519,11 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                     title="Minimize (coming soon)"
                   />
 
-                  {/* ✅ Fullscreen */}
+                  {/* Fullscreen */}
                   <span
                     className="w-3 h-3 rounded-full bg-green-400 cursor-pointer hover:scale-110 transition-transform"
                     title="Open editor in fullscreen"
-                    onClick={() => setEditorFullscreen(true)}
+                    // onClick={() => setEditorFullscreen(true)}
                   />
                 </div>
 
@@ -602,7 +642,16 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                 <span className="text-xs text-white/80">Share with others</span>
               </label>
 
-              <button onClick={addSnippet} className="px-4 py-2 rounded bg-indigo-600">
+              <button
+                onClick={addSnippet}
+                disabled={!loggedIn}
+                title={loggedIn ? "Save animation" : "Login to save your animation"}
+                className={`px-4 py-2 rounded ${
+                  loggedIn
+                    ? "bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
+                    : "bg-indigo-600/50 cursor-not-allowed opacity-60"
+                }`}
+              >
                 Save
               </button>
 
@@ -630,6 +679,11 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
             {saved && (
               <div className="mt-3 w-full text-sm text-left bg-green-600 duration-200 text-white p-2 rounded-md">
                 Saved — visible in Library. If shared, it will appear in Shared tab.
+              </div>
+            )}
+            {!loggedIn && (
+              <div className="mt-3 text-sm text-left rounded-md border border-amber-400/30 bg-amber-500/10 p-2 text-amber-200">
+                Log in to save your animation or keep a personal list.
               </div>
             )}
           </div>
@@ -681,6 +735,8 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
         <div className="space-y-2">
           {loadingMyAnimations ? (
             <div className="text-sm text-white/60">Loading your animations...</div>
+          ) : !loggedIn ? (
+            <div className="text-sm text-white/60">Log in to view and manage your saved animations.</div>
           ) : myAnimations.length === 0 ? (
             <div className="text-sm text-white/60">You have no saved animations yet. Create one and it will appear here.</div>
           ) : (
@@ -706,13 +762,10 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
                     Load
                   </button>
                   <button
-                    onClick={() => {
-                      setShare(!anim.isPublic);
-                      loadAnimationToEditor(anim);
-                    }}
-                    className="text-xs px-2 py-1 rounded bg-white/10 hover:bg-white/20"
+                    onClick={() => deleteAnimation(anim._id || anim.id)}
+                    className="text-xs px-2 py-1 rounded bg-red-600 hover:bg-red-500"
                   >
-                    {anim.isPublic ? "Make Private" : "Set Shared"}
+                    Delete
                   </button>
                 </div>
               </div>
@@ -889,8 +942,13 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
 
                     <button
                       onClick={saveAiSnippet}
-                      className="px-3 py-1 rounded bg-sky-600 cursor-pointer text-sm"
-                      disabled={!aiResult}
+                      disabled={!aiResult || !loggedIn}
+                      title={loggedIn ? "Save as snippet" : "Login to save your animation"}
+                      className={`px-3 py-1 rounded text-sm ${
+                        loggedIn && aiResult
+                          ? "bg-sky-600 cursor-pointer"
+                          : "bg-sky-600/50 cursor-not-allowed opacity-60"
+                      }`}
                     >
                       Save as snippet
                     </button>
@@ -983,132 +1041,6 @@ console.log("AI generated animation for:", ${JSON.stringify(safePrompt)});
               )}
             </div>
           </div>
-        </div>
-      )}
-      {editorFullscreen && (
-        <div className="fixed inset-0 z-50">
-
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0"
-            onClick={() => setEditorFullscreen(false)}
-            style={{
-              backdropFilter: "",
-              WebkitBackdropFilter: "",
-              background: "rgba(2,6,23,0.75)",
-            }}
-          />
-
-          {/* Floating editor window */}
-          <Rnd
-            default={{
-              x: window.innerWidth / 2 - DEFAULT_EDITOR_SIZE.width / 2,
-              y: window.innerHeight / 2 - DEFAULT_EDITOR_SIZE.height / 2,
-              width: DEFAULT_EDITOR_SIZE.width,
-              height: DEFAULT_EDITOR_SIZE.height,
-            }}
-            minWidth={600}
-            minHeight={300}
-            bounds="window"
-            dragHandleClassName="editor-drag-handle"
-            enableResizing={{
-              top: true,
-              right: true,
-              bottom: true,
-              left: true,
-              topRight: true,
-              bottomRight: true,
-              bottomLeft: true,
-              topLeft: true,
-            }}
-            className="relative z-10"
-          >
-            <div
-              className="w-full h-full rounded-xl overflow-hidden flex flex-col"
-              style={{
-                background: "#000",
-                boxShadow: "0 25px 60px rgba(0,0,0,0.9)",
-                border: "1px solid rgba(255,255,255,0.12)",
-              }}
-            >
-
-              {/* HEADER (drag handle) */}
-              <div className="editor-drag-handle flex items-center gap-2 px-3 py-2 bg-black/90 border-b border-white/10 cursor-move select-none">
-
-                {/* traffic lights */}
-                <div className="flex gap-1">
-                  <span className="w-3 h-3 bg-red-500 rounded-full" />
-                  <span className="w-3 h-3 bg-yellow-400 rounded-full" />
-                  <span className="w-3 h-3 bg-green-400 rounded-full" />
-                </div>
-
-                {/* tabs */}
-                <div className="ml-3 flex gap-2 text-xs">
-                  {["html", "css", "js"].map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      className={`px-2 py-1 rounded ${activeTab === tab
-                        ? "bg-indigo-600 text-white"
-                        : "bg-gray-800 text-white/60"
-                        }`}
-                    >
-                      {tab.toUpperCase()}
-                    </button>
-                  ))}
-                </div>
-
-                {/* actions */}
-                <div className="ml-auto flex gap-2">
-                  <button
-                    onClick={formatActive}
-                    className="px-3 py-1 rounded bg-gray-800 text-xs"
-                  >
-                    Format
-                  </button>
-
-                  <button
-                    onClick={() => setAiOpen(true)}
-                    className="px-3 py-1 rounded bg-gradient-to-br from-[#7C3AED] to-[#3B82F6] text-xs"
-                  >
-                    AI Assist
-                  </button>
-
-                  <button
-                    onClick={() => setEditorFullscreen(false)}
-                    className="px-3 py-1 rounded bg-red-600 text-xs"
-                  >
-                    ✕ Close
-                  </button>
-                </div>
-              </div>
-
-              {/* EDITOR AREA (resizes automatically) */}
-              <div className="flex-1">
-                <CodeEditor
-                  language={
-                    activeTab === "html"
-                      ? "html"
-                      : activeTab === "css"
-                        ? "css"
-                        : "javascript"
-                  }
-                  value={
-                    activeTab === "html"
-                      ? html
-                      : activeTab === "css"
-                        ? css
-                        : js
-                  }
-                  onChange={(val) => {
-                    if (activeTab === "html") setHtml(val);
-                    if (activeTab === "css") setCss(val);
-                    if (activeTab === "js") setJs(val);
-                  }}
-                />
-              </div>
-            </div>
-          </Rnd>
         </div>
       )}
     </section>

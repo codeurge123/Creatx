@@ -177,8 +177,8 @@ export default function AnimationPanel() {
             >
               <div className="flex items-center justify-between mb-3">
                 <div className='text-left'> 
-                  <strong className="text-sm">Animations</strong>
-                  <div className="text-[11px] text-white/60">Copy small animation snippets</div>
+                  <strong className="text-sm">Components</strong>
+                  <div className="text-[11px] text-white/60">Copy small interactive components</div>
                 </div>
                 <div className="flex items-center gap-2">
                   <button onClick={() => setOpen(false)} className="text-xs px-2 py-1 bg-gray-800 rounded bg-white/3">Close</button>
@@ -202,7 +202,7 @@ export default function AnimationPanel() {
                 {effectiveTab === 'shared' && (
                   <div className="space-y-3">
                     {sharedSnippets.length === 0 ? (
-                      <div className="text-sm text-white/60">No shared animations yet. When others share, they will appear here.</div>
+                      <div className="text-sm text-white/60">No shared components yet. When others share, they will appear here.</div>
                     ) : (
                       sharedSnippets.map(s => <SnippetItem key={s.id} item={s} />)
                     )}
@@ -221,7 +221,7 @@ export default function AnimationPanel() {
             onClick={() => setOpen(v => !v)}
             aria-expanded={open}
             aria-controls="animation-panel"
-            title="Open animations"
+            title="Open components"
               className="w-12 h-12 rounded-full bg-indigo-600 shadow-lg flex items-center justify-center ring-2 ring-white/6 "
           >
             <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>

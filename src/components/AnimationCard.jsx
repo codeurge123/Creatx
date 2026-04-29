@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import { PreviewContent } from "./PreviewContent";
 
-function AnimationCard({ card, isFavorite, onToggleFavorite, onClick, onOwnerClick }) {
+function AnimationCard({ card, isFavorite, onToggleFavorite, onClick, onOwnerClick, likeDisabled = false }) {
   // Handle both API data and sample data formats
   const cardId = card._id || card.id;
   const cardTitle = card.title;
@@ -18,8 +18,12 @@ function AnimationCard({ card, isFavorite, onToggleFavorite, onClick, onOwnerCli
       className="relative group bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-2xl overflow-hidden border border-white/10 hover:border-indigo-500/50 transition-all  hover:scale-105"
     >
       {/* Preview Area */}
-      <div className="h-48 bg-black/20 flex items-center justify-center p-4">
-        <PreviewContent card={card} />
+      <div className="h-48 bg-gradient-to-br from-gray-900/80 to-black/30 flex items-center justify-center p-4">
+        <PreviewContent
+          card={card}
+          background="linear-gradient(135deg, rgba(17,24,39,0.92) 0%, rgba(3,7,18,0.76) 100%)"
+          className="rounded-xl"
+        />
       </div>
 
       {/* Card Content */}
@@ -53,7 +57,11 @@ function AnimationCard({ card, isFavorite, onToggleFavorite, onClick, onOwnerCli
                 e.stopPropagation();
                 onToggleFavorite();
               }}
-              className="flex items-center gap-1 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-all duration-150"
+              className={`flex items-center gap-1 p-2 rounded-full transition-all duration-150 ${
+                likeDisabled
+                  ? "bg-white/5 cursor-not-allowed opacity-80"
+                  : "bg-white/5 hover:bg-white/10"
+              }`}
             >
               <Heart
                 size={20}

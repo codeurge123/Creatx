@@ -1,33 +1,50 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { userAPI } from "../services/userService";
+import { isAuthenticated, setAuthSession } from "../utils/auth";
+
+const initialForm = {
+  email: "",
+  password: "",
+};
+
+function normalizeLoginForm(formData) {
+  return {
+    email: formData.email.trim().toLowerCase(),
+    password: formData.password,
+  };
+}
 
 export default function Login() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState(initialForm);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  if (isAuthenticated()) {
+    return <Navigate to="/components" replace />;
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const normalized = normalizeLoginForm(formData);
+    if (!normalized.email || !normalized.password) {
+      setError("Email and password are required.");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
     try {
-      const response = await userAPI.login(formData);
-      const { accessToken, refreshToken } = response.data.data;
+      const response = await userAPI.login(normalized);
+      const { accessToken, refreshToken, user } = response.data.data;
 
-      // Store tokens in localStorage
-      localStorage.setItem('accessToken', accessToken);
-      if (refreshToken) {
-        localStorage.setItem('refreshToken', refreshToken);
-      }
+      setAuthSession({ accessToken, refreshToken, user });
 
       // Navigate to library
-      navigate("/library");
+      navigate("/components");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed. Please try again.");
     } finally {
@@ -62,7 +79,7 @@ export default function Login() {
           </h1>
 
           <p className="text-center text-white/60 text-sm sm:text-base mb-6">
-            Sign in to access your animation library
+            Sign in to access your components, likes, and saved work
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -97,15 +114,7 @@ export default function Login() {
               />
             </div>
 
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 text-white/70">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 rounded border-white/20 bg-white/5 text-indigo-600 focus:ring-indigo-500"
-                />
-                Remember me
-              </label>
-
+            <div className="flex items-center justify-end text-sm">
               <Link
                 to="/forgot-password"
                 className="text-indigo-400 hover:text-indigo-300 transition"
@@ -137,6 +146,10 @@ export default function Login() {
             >
               Sign up
             </Link>
+          </div>
+
+          <div className="mt-4 text-center text-xs text-white/45">
+            Your session stays active securely with refresh tokens.
           </div>
 
         </div>

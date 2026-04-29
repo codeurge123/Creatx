@@ -1,117 +1,81 @@
-import React, { useEffect, useRef, useState } from "react";
-import Prism from "prismjs";
-import "prismjs/themes/prism-tomorrow.css";
-import "prismjs/components/prism-markup";
-import "prismjs/components/prism-css";
-import "prismjs/components/prism-javascript";
-import {
-  Heart,
-  X,
-  Copy,
-  Check,
-  Edit,
-  Maximize2
-} from 'lucide-react';
-function PreviewContent({ card }) {
-  const previewRef = useRef(null);
-  const [key, setKey] = useState(0);
+import React, { useMemo } from "react";
 
-  useEffect(() => {
-    // Force complete remount when card changes
-    setKey(prev => prev + 1);
-  }, [card.id, card.css, card.html, card.js]);
+function PreviewContent({
+  card,
+  background = "linear-gradient(135deg, #1f2937 0%, #111827 100%)",
+  className = "",
+}) {
+  const previewDoc = useMemo(() => {
+    const html = card?.html || "";
+    const css = card?.css || "";
+    const js = card?.js || "";
+    const safeBackground = String(background).replace(/<\/style/gi, "<\\/style");
 
-  useEffect(() => {
-    if (!previewRef.current) return;
-
-    const previewContainer = previewRef.current;
-
-    // Clear everything first
-    previewContainer.innerHTML = '';
-
-    // Create a new wrapper div
-    const wrapper = document.createElement('div');
-    wrapper.className = 'animation-wrapper';
-    wrapper.style.width = '100%';
-    wrapper.style.height = '100%';
-    wrapper.style.display = 'flex';
-    wrapper.style.alignItems = 'center';
-    wrapper.style.justifyContent = 'center';
-
-    // Inject CSS with unique scoping
-    if (card.css) {
-      const styleEl = document.createElement('style');
-      styleEl.setAttribute('data-animation-style', key);
-
-      // Scope CSS to this specific wrapper
-      let scopedCss = card.css;
-
-      // Remove any existing .preview-content wrappers from CSS
-      scopedCss = scopedCss.replace(/\.preview-content\s*>\s*div\s*\{[^}]*\}/g, '');
-
-      styleEl.textContent = scopedCss;
-      wrapper.appendChild(styleEl);
-    }
-
-    // Inject HTML
-    if (card.html) {
-      const contentDiv = document.createElement('div');
-      contentDiv.innerHTML = card.html;
-      wrapper.appendChild(contentDiv);
-    }
-
-    // Append wrapper to container
-    previewContainer.appendChild(wrapper);
-
-    // CRITICAL: Force DOM reflow to restart animations
-    void wrapper.offsetWidth;
-
-    // Trigger animation restart by toggling display
-    wrapper.style.display = 'none';
-    requestAnimationFrame(() => {
-      wrapper.style.display = 'flex';
-
-      // Execute JavaScript after animations are ready
-      if (card.js) {
-        setTimeout(() => {
-          try {
-            const scopedScript = new Function(
-              'animationElement',
-              `
-                const container = animationElement;
-                const document = {
-                  querySelector: (s) => animationElement.querySelector(s),
-                  querySelectorAll: (s) => animationElement.querySelectorAll(s),
-                  getElementById: (id) => animationElement.querySelector('#' + id)
-                };
-                ${card.js}
-              `
-            );
-            scopedScript(wrapper);
-          } catch (error) {
-            console.error('JavaScript execution error:', error);
-          }
-        }, 50);
+    return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html, body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: ${safeBackground};
       }
-    });
 
-    // Cleanup function
-    return () => {
-      previewContainer.innerHTML = '';
-    };
-  }, [key, card]);
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: system-ui, sans-serif;
+        overflow: hidden;
+      }
+
+      .animation-wrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+
+      .animation-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      ${css}
+    </style>
+  </head>
+  <body>
+    <div class="animation-wrapper">
+      <div class="animation-content">${html}</div>
+    </div>
+    <script>
+      try {
+        ${js}
+      } catch (error) {
+        console.error("JavaScript execution error:", error);
+      }
+    </script>
+  </body>
+</html>`;
+  }, [background, card]);
 
   return (
-    <div
-      ref={previewRef}
-      key={key}
-      className="preview-content w-full h-full"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '400px'
-      }}
+    <iframe
+      key={`${card?._id || card?.id || "preview"}-${card?._timestamp || "base"}`}
+      title={`${card?.title || "Animation"} preview`}
+      srcDoc={previewDoc}
+      sandbox="allow-scripts"
+      className={`preview-content block h-full w-full overflow-hidden border-0 bg-transparent ${className}`}
     />
   );
 }

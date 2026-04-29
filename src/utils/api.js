@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { clearAuthSession, getAccessToken, getRefreshToken, isAuthenticated } from './auth';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
 
@@ -10,7 +11,7 @@ const api = axios.create({
 // Request interceptor to add auth token if available
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
+    const token = getAccessToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -28,8 +29,19 @@ api.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
+    const isRefreshRequest = originalRequest?.url?.includes('/users/refresh-token');
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (!error.response) {
+      return Promise.reject(error);
+    }
+
+    if (
+      error.response.status === 401 &&
+      !originalRequest?._retry &&
+      !isRefreshRequest &&
+      isAuthenticated() &&
+      getRefreshToken()
+    ) {
       originalRequest._retry = true;
 
       try {
@@ -40,7 +52,9 @@ api.interceptors.response.use(
         );
 
         const { accessToken, refreshToken } = refreshResponse.data.data;
-        localStorage.setItem('accessToken', accessToken);
+        if (accessToken) {
+          localStorage.setItem('accessToken', accessToken);
+        }
         if (refreshToken) {
           localStorage.setItem('refreshToken', refreshToken);
         }
@@ -49,12 +63,13 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-        // Refresh failed, redirect to login
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
+        clearAuthSession();
         return Promise.reject(refreshError);
       }
+    }
+
+    if (error.response.status === 401 && isRefreshRequest) {
+      clearAuthSession();
     }
 
     return Promise.reject(error);

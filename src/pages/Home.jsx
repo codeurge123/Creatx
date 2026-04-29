@@ -9,10 +9,10 @@ export default function Home() {
         <section className="min-h-[85vh] flex items-center justify-center bg-white/5 rounded-2xl shadow-xl px-8 py-12 text-center overflow-hidden relative">
           <div className="w-full">
             <h1 className="text-6xl md:text-8xl font-extrabold text-white animate-fadeUp" style={{ animationDelay: '80ms' }}>Create beautiful micro-interactions</h1>
-            <p className="mt-6 text-slate-300 max-w-3xl mx-auto text-xl md:text-2xl animate-fadeUp" style={{ animationDelay: '220ms' }}>A curated library of tiny CSS and JS animations — preview them, copy the code, and drop them into your projects.</p>
+            <p className="mt-6 text-slate-300 max-w-3xl mx-auto text-xl md:text-2xl animate-fadeUp" style={{ animationDelay: '220ms' }}>A curated library of tiny CSS and JS components — preview them, copy the code, and drop them into your projects.</p>
 
             <div className="mt-12 flex items-center justify-center gap-4 animate-fadeUp" style={{ animationDelay: '360ms' }}>
-              <button onClick={() => navigate('/library')} className="px-6 py-4 rounded-full bg-indigo-600 text-white font-semibold hover:opacity-95">Explore Animations</button>
+              <button onClick={() => navigate('/components')} className="px-6 py-4 rounded-full bg-indigo-600 text-white font-semibold hover:opacity-95">Explore Components</button>
               <button
                 onClick={
                   () => {

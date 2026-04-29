@@ -1,29 +1,57 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { userAPI } from "../services/userService";
+import { isAuthenticated, setAuthSession } from "../utils/auth";
+
+const initialForm = {
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
+
+function normalizeRegistrationForm(formData) {
+  return {
+    name: formData.name.trim(),
+    email: formData.email.trim().toLowerCase(),
+    password: formData.password,
+    confirmPassword: formData.confirmPassword,
+  };
+}
 
 export default function SignUp() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [formData, setFormData] = useState(initialForm);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  if (isAuthenticated()) {
+    return <Navigate to="/components" replace />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (formData.password !== formData.confirmPassword) {
+    const normalized = normalizeRegistrationForm(formData);
+
+    if (!normalized.name || !normalized.email || !normalized.password) {
+      setError("Name, email, and password are required.");
+      return;
+    }
+
+    if (normalized.password !== normalized.confirmPassword) {
       setError("Passwords do not match!");
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters long!");
+    if (normalized.password.length < 8) {
+      setError("Password must be at least 8 characters long!");
+      return;
+    }
+
+    if (!/[A-Z]/.test(normalized.password) || !/[a-z]/.test(normalized.password) || !/\d/.test(normalized.password)) {
+      setError("Password must include upper-case, lower-case, and a number.");
       return;
     }
 
@@ -31,13 +59,19 @@ export default function SignUp() {
 
     try {
       await userAPI.register({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
+        name: normalized.name,
+        email: normalized.email,
+        password: normalized.password,
       });
 
-      // Registration successful, redirect to login
-      navigate("/login");
+      const loginResponse = await userAPI.login({
+        email: normalized.email,
+        password: normalized.password,
+      });
+      const { accessToken, refreshToken, user } = loginResponse.data.data;
+      setAuthSession({ accessToken, refreshToken, user });
+
+      navigate("/components");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Please try again.");
     } finally {
@@ -75,7 +109,7 @@ export default function SignUp() {
           </h1>
 
           <p className="text-white/60 text-sm sm:text-base mb-6 sm:mb-8">
-            Join Creatx and start animating
+            Join Creatx and start building components
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -91,6 +125,7 @@ export default function SignUp() {
                 value={formData.name}
                 onChange={handleChange}
                 required
+                minLength={2}
                 placeholder="John Doe"
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-white placeholder-white/40 text-sm sm:text-base"
               />
@@ -123,9 +158,13 @@ export default function SignUp() {
                 value={formData.password}
                 onChange={handleChange}
                 required
+                minLength={8}
                 placeholder="••••••••"
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-white placeholder-white/40 text-sm sm:text-base"
               />
+              <p className="mt-2 text-xs text-white/45">
+                Use at least 8 characters with upper-case, lower-case, and a number.
+              </p>
             </div>
 
             {/* Confirm Password */}
@@ -139,6 +178,7 @@ export default function SignUp() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
+                minLength={8}
                 placeholder="••••••••"
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-white placeholder-white/40 text-sm sm:text-base"
               />
@@ -196,26 +236,8 @@ export default function SignUp() {
             </Link>
           </div>
 
-          {/* Divider */}
-          <div className="relative my-6 sm:my-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10"></div>
-            </div>
-            <div className="relative flex justify-center text-xs sm:text-sm">
-              <span className="px-4 bg-[#0c1633] text-white/60">
-                Or sign up with
-              </span>
-            </div>
-          </div>
-
-          {/* Social Buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <button className="px-4 py-3 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition text-sm">
-              Google
-            </button>
-            <button className="px-4 py-3 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition text-sm">
-              GitHub
-            </button>
+          <div className="mt-4 text-center text-xs text-white/45">
+            After signup, we sign you in automatically and take you to the Components library.
           </div>
 
         </div>
@@ -223,7 +245,7 @@ export default function SignUp() {
         {/* Footer Text */}
         <div className="mt-6 text-center">
           <p className="text-white/50 text-xs">
-            By signing up, you'll get access to our full library of micro-interactions and animations.
+            By signing up, you'll get access to our full library of micro-interactions and components.
           </p>
         </div>
 

@@ -4,6 +4,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { IoIosArrowForward } from "react-icons/io";
 import { LogOut } from 'lucide-react';
 import { userAPI } from '../services/userService';
+import { clearAuthSession, getAccessToken, setStoredUser, subscribeToAuthChanges } from '../utils/auth';
 
 export default function Navbar() {
   const navigate = useNavigate()
@@ -24,9 +25,28 @@ export default function Navbar() {
     checkAuthStatus()
   }, [])
 
+  useEffect(() => {
+    return subscribeToAuthChanges((detail) => {
+      if (!detail?.isAuthenticated) {
+        setIsAuthenticated(false)
+        setUser(null)
+        setLoading(false)
+        return
+      }
+
+      if (detail.user) {
+        setUser(detail.user)
+        setIsAuthenticated(true)
+        setLoading(false)
+      } else {
+        checkAuthStatus()
+      }
+    })
+  }, [])
+
   const checkAuthStatus = async () => {
     try {
-      const token = localStorage.getItem('accessToken')
+      const token = getAccessToken()
       if (token) {
         // Add a timeout to prevent hanging
         const timeoutId = setTimeout(() => {
@@ -39,12 +59,13 @@ export default function Navbar() {
           const response = await userAPI.getCurrentUser()
           clearTimeout(timeoutId)
           setUser(response.data.data)
+          setStoredUser(response.data.data)
           setIsAuthenticated(true)
           setLoading(false)
         } catch (error) {
           clearTimeout(timeoutId)
           console.error('Auth check failed:', error)
-          localStorage.removeItem('accessToken')
+          clearAuthSession()
           setIsAuthenticated(false)
           setUser(null)
           setLoading(false)
@@ -65,14 +86,14 @@ export default function Navbar() {
   const handleLogout = async () => {
     try {
       await userAPI.logout()
-      localStorage.removeItem('accessToken')
+      clearAuthSession()
       setIsAuthenticated(false)
       setUser(null)
       navigate('/')
     } catch (error) {
       console.error('Logout failed:', error)
       // Force logout on client side
-      localStorage.removeItem('accessToken')
+      clearAuthSession()
       setIsAuthenticated(false)
       setUser(null)
       navigate('/')
@@ -106,31 +127,27 @@ export default function Navbar() {
             </NavLink>
 
 
-            {isAuthenticated && (
-              <>
-                <NavLink
-                  to="/library"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "relative px-4 py-2 rounded-xl font-semibold bg-gradient-to-br from-[#7C3AED] to-[#3B82F6] bg-clip-text text-transparent scale-105 transition-all duration-200 nav-underline nav-underline-active"
-                      : "relative px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-all duration-200 nav-underline"
-                  }
-                >
-                  My Animations
-                </NavLink>
+            <NavLink
+              to="/components"
+              className={({ isActive }) =>
+                isActive
+                  ? "relative px-4 py-2 rounded-xl font-semibold bg-gradient-to-br from-[#7C3AED] to-[#3B82F6] bg-clip-text text-transparent scale-105 transition-all duration-200 nav-underline nav-underline-active"
+                  : "relative px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-all duration-200 nav-underline"
+              }
+            >
+              Components
+            </NavLink>
 
-                <NavLink
-                  to="/create"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "relative px-4 py-2 rounded-xl font-semibold bg-gradient-to-br from-[#7C3AED] to-[#3B82F6] bg-clip-text text-transparent scale-105 transition-all duration-200 nav-underline nav-underline-active"
-                      : "relative px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-all duration-200 nav-underline"
-                  }
-                >
-                  Create
-                </NavLink>
-              </>
-            )}
+            <NavLink
+              to="/create"
+              className={({ isActive }) =>
+                isActive
+                  ? "relative px-4 py-2 rounded-xl font-semibold bg-gradient-to-br from-[#7C3AED] to-[#3B82F6] bg-clip-text text-transparent scale-105 transition-all duration-200 nav-underline nav-underline-active"
+                  : "relative px-4 py-2 rounded-xl text-slate-200 hover:bg-white/10 hover:text-white transition-all duration-200 nav-underline"
+              }
+            >
+              Create
+            </NavLink>
 
             <NavLink
               to="/community"

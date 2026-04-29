@@ -1,17 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  Heart,
-  X,
-  Copy,
-  Check,
-  Edit,
-  Maximize2,
-  Loader2
-} from 'lucide-react';
 import { AnimationModal } from "./AnimationModal";
 import { AnimationCard } from "./AnimationCard";
-import { animationAPI } from "../services/animationService";
 import { sampleCards } from "../../samplecard";
+import { isAuthenticated, subscribeToAuthChanges } from "../utils/auth";
+import { getComponentLikesForCurrentUser, toggleComponentLike } from "../utils/componentLikes";
 
 export default function Library() {
   const [category, setCategory] = useState("all");
@@ -19,33 +11,29 @@ export default function Library() {
   const [favorites, setFavorites] = useState({});
   const [copied, setCopied] = useState(false);
   const [showAll, setShowAll] = useState(false);
-  const [animations, setAnimations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [likeNotice, setLikeNotice] = useState("");
+  const [loggedIn, setLoggedIn] = useState(isAuthenticated());
 
   useEffect(() => {
-    fetchUserAnimations();
+    setLoggedIn(isAuthenticated());
+    setFavorites(getComponentLikesForCurrentUser());
   }, []);
 
-  const fetchUserAnimations = async () => {
-    try {
-      setLoading(true);
-      const response = await animationAPI.getUserAnimations();
-      // Only show non-public (private) animations in your library.
-      // Shared animations are visible in the Community section.
-      const privateAnimations = (response.data.data || []).filter(
-        (anim) => !anim.isPublic
-      );
-      setAnimations(privateAnimations);
-    } catch (err) {
-      setError("Failed to load animations");
-      console.error("Error fetching animations:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    return subscribeToAuthChanges((detail) => {
+      setLoggedIn(Boolean(detail?.isAuthenticated));
+      setFavorites(Boolean(detail?.isAuthenticated) ? getComponentLikesForCurrentUser() : {});
+    });
+  }, []);
 
-  const allAnimations = [...animations, ...sampleCards];
+  useEffect(() => {
+    if (!likeNotice) return undefined;
+
+    const timer = setTimeout(() => setLikeNotice(""), 2500);
+    return () => clearTimeout(timer);
+  }, [likeNotice]);
+
+  const allAnimations = sampleCards;
 
   const filteredCards = category === "all"
     ? allAnimations
@@ -54,24 +42,16 @@ export default function Library() {
   const displayedCards = showAll ? filteredCards : filteredCards.slice(0, 6);
 
   const toggleFavorite = async (id) => {
-    try {
-      const response = await animationAPI.toggleLike(id);
-      const liked = response.data.data.liked;
-      const likesCount = response.data.data.likesCount;
+    if (!isAuthenticated()) {
+      setLikeNotice("Please login first to like the component.");
+      return;
+    }
 
-      setFavorites((prev) => ({
-        ...prev,
-        [id]: liked,
-      }));
+    const nextLiked = toggleComponentLike(id);
+    setFavorites(getComponentLikesForCurrentUser());
 
-      // update local likes count for the animation
-      setAnimations((prev) =>
-        prev.map((anim) =>
-          (anim._id || anim.id) === id ? { ...anim, likesCount } : anim
-        )
-      );
-    } catch (err) {
-      console.error("Failed to toggle like", err);
+    if (nextLiked === null) {
+      setLikeNotice("Please login first to like the component.");
     }
   };
 
@@ -94,6 +74,11 @@ ${selectedCard.js ? `// JavaScript\n${selectedCard.js}` : ''}`;
   return (
     <div className="min-h-screen text-white p-6">
       <div className="max-w-7xl mx-auto">
+        {likeNotice && (
+          <div className="mb-6 rounded-xl border border-amber-400/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+            {likeNotice}
+          </div>
+        )}
 
         {/* Category Filters */}
         <div className="flex gap-3 mb-8">
@@ -136,33 +121,18 @@ ${selectedCard.js ? `// JavaScript\n${selectedCard.js}` : ''}`;
         </div>
 
         {/* Animation Grid */}
-        {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-indigo-400" />
-            <span className="ml-2 text-white/60">Loading your animations...</span>
-          </div>
-        ) : error ? (
-          <div className="text-center py-20">
-            <div className="text-red-400 mb-4">{error}</div>
-            <button
-              onClick={fetchUserAnimations}
-              className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium transition-colors"
-            >
-              Try Again
-            </button>
-          </div>
-        ) : displayedCards.length === 0 ? (
+        {displayedCards.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-white/60 mb-4">
-              {animations.length === 0
-                ? "You haven't created any private animations yet. Create one or share to Community to show it to others."
-                : "No animations found in this category."}
+              {allAnimations.length === 0
+                ? "No components available yet. Check Community or create your own."
+                : "No components found in this category."}
             </div>
             <a
               href="/create"
               className="inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium transition-colors"
             >
-              Create Your First Animation
+              Create Your First Component
             </a>
           </div>
         ) : (
@@ -174,19 +144,20 @@ ${selectedCard.js ? `// JavaScript\n${selectedCard.js}` : ''}`;
                 isFavorite={favorites[card._id || card.id]}
                 onToggleFavorite={() => toggleFavorite(card._id || card.id)}
                 onClick={() => setSelectedCard(card)}
+                likeDisabled={!loggedIn && !favorites[card._id || card.id]}
               />
             ))}
           </div>
         )}
 
         {/* View All Button */}
-        {!showAll && !loading && !error && filteredCards.length > 6 && (
+        {!showAll && filteredCards.length > 6 && (
           <div className="flex justify-center mt-8">
             <button
               onClick={() => setShowAll(true)}
               className="px-8 py-3 relative top-[-49px] duration-200 bg-indigo-500 hover:bg-indigo-600 rounded-full font-semibold shadow-lg transition-all hover:scale-105"
             >
-              View All Animations ({filteredCards.length})
+              View All Components ({filteredCards.length})
             </button>
           </div>
         )}
@@ -196,8 +167,8 @@ ${selectedCard.js ? `// JavaScript\n${selectedCard.js}` : ''}`;
       {selectedCard && (
         <AnimationModal
           card={selectedCard}
-          isFavorite={favorites[selectedCard.id]}
-          onToggleFavorite={() => toggleFavorite(selectedCard.id)}
+          isFavorite={favorites[selectedCard._id || selectedCard.id]}
+          onToggleFavorite={() => toggleFavorite(selectedCard._id || selectedCard.id)}
           onClose={() => setSelectedCard(null)}
           onCopy={copyCode}
           copied={copied}

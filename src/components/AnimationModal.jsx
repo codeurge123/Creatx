@@ -272,6 +272,8 @@ function AnimationModal({ card, isFavorite, onToggleFavorite, onClose, onCopy, c
                 <PreviewContent
                   key={modifiedCard._timestamp || modifiedCard.id}
                   card={modifiedCard}
+                  background="linear-gradient(135deg, #1f2937 0%, #111827 100%)"
+                  className="rounded-lg"
                 />
               </div>
             </div>

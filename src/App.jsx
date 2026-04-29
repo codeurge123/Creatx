@@ -1,6 +1,6 @@
 // App.jsx
 import { useState, useEffect, useRef } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import "./App.css";
 import CardGrid from "./components/CardGrid";
 import CodeViewer from "./components/CodeViewer";
@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import AnimationPanel from "./components/AnimationPanel";
 import Home from "./pages/Home";
 import Create from "./pages/Create";
+import DocsShell from "./pages/DocsShell.jsx";
 import Login from "./pages/Login.jsx";
 import SignUp from './pages/SignUp.jsx'
 import Community from "./pages/Community.jsx";
@@ -33,6 +34,8 @@ import { CodeBlock, FullCodeModal } from "./components/CodeBlock.jsx";
 import { PreviewContent } from "./components/PreviewContent.jsx";
 import Library from "./components/Library.jsx";
 import ForgetPassword from "./pages/ForgetPassword.jsx";
+import Terms from "./pages/Terms.jsx";
+import Privacy from "./pages/Privacy.jsx";
 import { sampleCards } from "../samplecard.js";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 
@@ -124,7 +127,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route
-              path="/library"
+              path="/components"
               element={
                 <Library
                   selected={selected}
@@ -135,11 +138,15 @@ function App() {
                 />
               }
             />
+            <Route path="/library" element={<Navigate to="/components" replace />} />
             <Route path="/create" element={<Create />} />            <Route path="/profile" element={<Profile />} />
+            <Route path="/docs" element={<DocsShell />} />
             <Route path="/user/:id" element={<UserProfile />} />            <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/community" element={<Community />} />
             <Route path="/forgot-password" element={<ForgetPassword />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
           </Routes>
         </main>
 
